@@ -8,37 +8,21 @@ const projects = [
   {
     title: "Bukit Pamoyanan Ticketing System",
     description: "A comprehensive ticketing system for Bukit Pamoyanan Natural Tourism in Subang. Built during internship at DSTI ITB, featuring online booking, payment integration, and visitor management.",
-    techStack: ["React.js", "Node.js", "PostgreSQL", "Express"],
-    githubUrl: "https://github.com",
+    techStack: ["MySQL", "C#"],
   },
   {
-    title: "Gothru Platform",
-    description: "Full-stack web application at Gothru, delivering scalable solutions with modern tech stack. Focused on performance optimization and seamless user experience.",
-    techStack: ["Next.js", "TypeScript", "Golang", "PostgreSQL"],
+    title: "XyBeat - Discord Music Bot",
+    description: "Advanced Discord music bot with TypeScript & discord.js v14. Features native yt-dlp integration, background download system (pre-downloads next 5 songs), real-time progress tracking, MP3 caching, Redis queue persistence with crash recovery, and smart voice management. Supports YouTube playlists, mixes, and concurrent downloading (2-3 songs per server).",
+    techStack: ["TypeScript", "Discord.js v14", "yt-dlp", "FFmpeg", "Redis", "Node.js"],
+    githubUrl: "https://github.com/ibnurizqiaramadan/xybeat",
+    // demoUrl: "https://github.com/ibnurizqiaramadan/xybeat",  
   },
-  {
-    title: "Real-time Collaboration Tool",
-    description: "WebSocket-based real-time collaboration platform with live updates, built using modern JavaScript frameworks and Node.js backend.",
-    techStack: ["React.js", "Node.js", "Socket.io", "MongoDB"],
-    githubUrl: "https://github.com",
-  },
-  {
-    title: "DevOps Dashboard",
-    description: "Infrastructure monitoring dashboard for Proxmox environments. Provides real-time metrics, resource management, and automated deployment workflows.",
-    techStack: ["Next.js", "Golang", "Proxmox API", "Docker"],
-    githubUrl: "https://github.com",
-  },
-  {
-    title: "API Gateway Service",
-    description: "High-performance API gateway built with Golang and Deno.js, handling microservices routing, authentication, and rate limiting.",
-    techStack: ["Golang", "Deno.js", "Redis", "Docker"],
-    githubUrl: "https://github.com",
-  },
-  {
-    title: "Modern E-Commerce Solution",
-    description: "Full-featured e-commerce platform with server-side rendering, optimized SEO, and integrated payment gateway for seamless transactions.",
-    techStack: ["Next.js", "TypeScript", "Node.js", "Stripe"],
-    githubUrl: "https://github.com",
+  {   
+    title: "Face Clustering with GPU",
+    description: "High-performance face clustering application using InsightFace + FAISS GPU. Features dual GPU parallel processing with 2.45 img/s throughput (207% faster than CPU). Automatically groups photos by faces with Redis caching and bounding box visualization.",
+    techStack: ["Python", "InsightFace", "FAISS GPU", "Redis", "OpenCV"],
+    githubUrl: "https://github.com/ibnurizqiaramadan/face-grouping",
+    // demoUrl: "https://github.com/ibnurizqiaramadan/face-grouping",
   },
 ]
 

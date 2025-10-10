@@ -29,6 +29,35 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D0F1A;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4F46E5 0%, #22D3EE 100%);
+  border-radius: 10px;
+  border: 2px solid #0D0F1A;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6366F1 0%, #06B6D4 100%);
+  box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4F46E5 #0D0F1A;
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
@@ -41,4 +70,9 @@ body {
 
 .glow-secondary {
   box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+}
+
+/* Safe area for mobile devices (notch support) */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
 }
