@@ -6,17 +6,19 @@ import { ContactForm } from "@/components/ContactForm"
 import { motion } from "framer-motion"
 import { Mail, MapPin, Phone, Github, Linkedin, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { DiscordIcon } from "@/components/icons/DiscordIcon"
 
 const contactInfo = [
-  { icon: Mail, label: "Email", value: "ibnu@example.com" },
-  { icon: MapPin, label: "Location", value: "Indonesia" },
-  { icon: Phone, label: "Phone", value: "+62 123 456 7890" },
+  { icon: Mail, label: "Email", value: "dadanibnu61@gmail.com" },
+  { icon: MapPin, label: "Location", value: "Bandung, Indonesia" },
+  { icon: Phone, label: "Phone", value: "+62 xxx xxxx xxxx" },
 ]
 
 const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+  { icon: Github, href: "https://github.com/ibnurizqiaramadan", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/ibnu-rizqia-ramadan", label: "LinkedIn" },
+  { icon: Instagram, href: "https://www.instagram.com/ibnurizqia", label: "Instagram" },
+  { icon: DiscordIcon, href: "http://discordapp.com/users/257147179297144833", label: "Discord: xyrus10" },
 ]
 
 export default function ContactPage() {
@@ -25,7 +27,7 @@ export default function ContactPage() {
       <Container>
         <SectionTitle
           title="Get In Touch"
-          subtitle="Let's discuss your next project or just say hello"
+          subtitle="Let's connect! Whether you want to discuss web development, backend technologies, or DevOps - I'd love to hear from you"
         />
 
         <div className="grid lg:grid-cols-2 gap-12">
@@ -100,7 +102,7 @@ export default function ContactPage() {
             </div>
 
             {/* Availability */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -116,7 +118,7 @@ export default function ContactPage() {
                 I&apos;m currently available for freelance projects and full-time
                 opportunities. Feel free to reach out!
               </p>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
         </div>
       </Container>

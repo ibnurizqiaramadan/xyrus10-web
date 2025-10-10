@@ -11,13 +11,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Ibnu - Fullstack Developer & Tech Enthusiast",
-  description: "Personal portfolio of Ibnu, a fullstack developer passionate about building innovative solutions and crafting seamless digital experiences.",
-  keywords: ["portfolio", "fullstack developer", "web development", "tech enthusiast"],
-  authors: [{ name: "Ibnu" }],
+  title: "Ibnu Rizqia Ramadan - Full Stack Developer @ Gothru",
+  description: "Full Stack Developer specializing in JavaScript, TypeScript, React.js, Next.js, Golang, Node.js, and Deno.js. Building scalable web applications and exploring DevOps with Proxmox.",
+  keywords: ["portfolio", "full stack developer", "javascript", "typescript", "react", "nextjs", "golang", "nodejs", "deno", "devops", "proxmox", "web development"],
+  authors: [{ name: "Ibnu Rizqia Ramadan" }],
   openGraph: {
-    title: "Ibnu - Fullstack Developer & Tech Enthusiast",
-    description: "Personal portfolio showcasing projects and skills",
+    title: "Ibnu Rizqia Ramadan - Full Stack Developer @ Gothru",
+    description: "Full Stack Developer specializing in modern web technologies. STMIK Bandung graduate with internship experience at DSTI ITB.",
     type: "website",
   },
 };

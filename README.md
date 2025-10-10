@@ -1,4 +1,4 @@
-# Personal Portfolio - Ibnu
+# Personal Portfolio - Ibnu Rizqia Ramadan
 
 A modern, dark-themed personal portfolio website built with Next.js, TypeScript, Tailwind CSS, and shadcn/ui. Features a futuristic VPS dashboard aesthetic with smooth animations and glassmorphism effects.
 

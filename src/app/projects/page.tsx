@@ -6,45 +6,39 @@ import { ProjectCard } from "@/components/ProjectCard"
 
 const projects = [
   {
-    title: "E-Commerce Platform",
-    description: "A full-featured e-commerce platform with cart, checkout, and payment integration.",
-    techStack: ["Next.js", "TypeScript", "Stripe", "PostgreSQL"],
-    githubUrl: "https://github.com",
-    demoUrl: "https://demo.example.com",
-  },
-  {
-    title: "Task Management App",
-    description: "Collaborative task management application with real-time updates and team features.",
-    techStack: ["React", "Node.js", "Socket.io", "MongoDB"],
-    githubUrl: "https://github.com",
-    demoUrl: "https://demo.example.com",
-  },
-  {
-    title: "AI Content Generator",
-    description: "AI-powered content generation tool using OpenAI's GPT models for marketing copy.",
-    techStack: ["Next.js", "OpenAI API", "TailwindCSS", "Vercel"],
-    githubUrl: "https://github.com",
-    demoUrl: "https://demo.example.com",
-  },
-  {
-    title: "Real Estate Dashboard",
-    description: "Modern dashboard for real estate management with analytics and property listings.",
-    techStack: ["React", "Chart.js", "Express", "PostgreSQL"],
-    githubUrl: "https://github.com",
-    demoUrl: "https://demo.example.com",
-  },
-  {
-    title: "Social Media Analytics",
-    description: "Analytics platform for tracking social media performance across multiple platforms.",
-    techStack: ["Next.js", "D3.js", "Redis", "Docker"],
+    title: "Bukit Pamoyanan Ticketing System",
+    description: "A comprehensive ticketing system for Bukit Pamoyanan Natural Tourism in Subang. Built during internship at DSTI ITB, featuring online booking, payment integration, and visitor management.",
+    techStack: ["React.js", "Node.js", "PostgreSQL", "Express"],
     githubUrl: "https://github.com",
   },
   {
-    title: "Weather Forecast App",
-    description: "Beautiful weather app with forecasts, maps, and location-based suggestions.",
-    techStack: ["React Native", "OpenWeather API", "Redux"],
+    title: "Gothru Platform",
+    description: "Full-stack web application at Gothru, delivering scalable solutions with modern tech stack. Focused on performance optimization and seamless user experience.",
+    techStack: ["Next.js", "TypeScript", "Golang", "PostgreSQL"],
+  },
+  {
+    title: "Real-time Collaboration Tool",
+    description: "WebSocket-based real-time collaboration platform with live updates, built using modern JavaScript frameworks and Node.js backend.",
+    techStack: ["React.js", "Node.js", "Socket.io", "MongoDB"],
     githubUrl: "https://github.com",
-    demoUrl: "https://demo.example.com",
+  },
+  {
+    title: "DevOps Dashboard",
+    description: "Infrastructure monitoring dashboard for Proxmox environments. Provides real-time metrics, resource management, and automated deployment workflows.",
+    techStack: ["Next.js", "Golang", "Proxmox API", "Docker"],
+    githubUrl: "https://github.com",
+  },
+  {
+    title: "API Gateway Service",
+    description: "High-performance API gateway built with Golang and Deno.js, handling microservices routing, authentication, and rate limiting.",
+    techStack: ["Golang", "Deno.js", "Redis", "Docker"],
+    githubUrl: "https://github.com",
+  },
+  {
+    title: "Modern E-Commerce Solution",
+    description: "Full-featured e-commerce platform with server-side rendering, optimized SEO, and integrated payment gateway for seamless transactions.",
+    techStack: ["Next.js", "TypeScript", "Node.js", "Stripe"],
+    githubUrl: "https://github.com",
   },
 ]
 
@@ -54,7 +48,7 @@ export default function ProjectsPage() {
       <Container>
         <SectionTitle
           title="My Projects"
-          subtitle="A showcase of my recent work and personal projects"
+          subtitle="From ticketing systems to DevOps dashboards - here are some projects I've built with modern tech stacks"
         />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

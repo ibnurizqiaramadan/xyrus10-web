@@ -4,11 +4,13 @@ import { motion } from "framer-motion"
 import { Github, Linkedin, Instagram } from "lucide-react"
 import { TypeAnimation } from "react-type-animation"
 import Image from "next/image"
+import { DiscordIcon } from "@/components/icons/DiscordIcon"
 
 const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+  { icon: Github, href: "https://github.com/ibnurizqiaramadan", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/ibnu-rizqia-ramadan", label: "LinkedIn" },
+  { icon: Instagram, href: "https://www.instagram.com/ibnurizqia", label: "Instagram" },
+  { icon: DiscordIcon, href: "http://discordapp.com/users/257147179297144833", label: "Discord: xyrus10", username: "xyrus10" },
 ]
 
 export function Hero() {
@@ -28,17 +30,19 @@ export function Hero() {
               transition={{ delay: 0.2 }}
               className="text-5xl md:text-7xl font-bold text-[#F8FAFC] mb-6"
             >
-              Hi, I&apos;m <span className="text-[#4F46E5]">Ibnu</span>
+              Hi, I&apos;m <span className="text-[#4F46E5]">Ibnu Rizqia Ramadan</span>
             </motion.h1>
 
             <div className="text-xl md:text-2xl text-[#94A3B8] mb-8 h-12">
               <TypeAnimation
                 sequence={[
-                  "Fullstack Developer",
+                  "Full Stack Developer @ Gothru",
                   2000,
-                  "Tech Enthusiast",
+                  "JavaScript & TypeScript Expert",
                   2000,
-                  "Problem Solver",
+                  "React & Next.js Specialist",
+                  2000,
+                  "Backend Developer (Go & Node.js)",
                   2000,
                 ]}
                 wrapper="span"
@@ -53,9 +57,9 @@ export function Hero() {
               transition={{ delay: 0.4 }}
               className="text-lg text-[#94A3B8] mb-8 leading-relaxed"
             >
-              Building innovative solutions and crafting seamless digital
-              experiences. Passionate about clean code, modern technologies,
-              and turning ideas into reality.
+              Passionate Full Stack Developer specializing in building fast, scalable, 
+              and user-friendly web applications. I love exploring modern technologies 
+              and creating innovative solutions that make a real impact.
             </motion.p>
 
             {/* Social Links */}
@@ -95,7 +99,7 @@ export function Hero() {
                 <div className="relative w-full aspect-square rounded-full overflow-hidden border-4 border-[#4F46E5]/30">
                   <Image
                     src="/avatar.jpg"
-                    alt="Ibnu"
+                    alt="Ibnu Rizqia Ramadan"
                     fill
                     className="object-cover"
                     priority

@@ -7,15 +7,20 @@ import { SectionTitle } from "@/components/SectionTitle"
 import { Code, Rocket, Coffee, Users } from "lucide-react"
 
 const skills = [
-  "Next.js",
-  "React",
+  "JavaScript",
   "TypeScript",
+  "React.js",
+  "Next.js",
+  "Golang",
   "Node.js",
+  "Deno.js",
   "Tailwind CSS",
   "PostgreSQL",
-  "MongoDB",
+  "MySQL",
+  "Convex",
   "Docker",
-  "AWS",
+  "Proxmox",
+  "DevOps",
   "Git",
 ]
 
@@ -32,7 +37,7 @@ export default function AboutPage() {
       <Container>
         <SectionTitle
           title="About Me"
-          subtitle="Get to know more about my journey and expertise"
+          subtitle="Full Stack Developer at Gothru | STMIK Bandung | Former Intern at DSTI ITB"
         />
 
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
@@ -49,7 +54,7 @@ export default function AboutPage() {
                 <div className="relative w-full aspect-square rounded-2xl overflow-hidden">
                   <Image
                     src="/avatar.jpg"
-                    alt="Ibnu"
+                    alt="Ibnu Rizqia Ramadan"
                     fill
                     className="object-cover"
                   />
@@ -66,25 +71,23 @@ export default function AboutPage() {
             className="space-y-4"
           >
             <h3 className="text-2xl font-bold text-[#F8FAFC]">
-              Hi, I&apos;m Ibnu 👋
+              Hi, I&apos;m Ibnu Rizqia Ramadan 👋
             </h3>
             <p className="text-[#94A3B8] leading-relaxed">
-              I&apos;m a passionate fullstack developer with a love for creating
-              elegant solutions to complex problems. With years of experience
-              in web development, I specialize in building modern, responsive,
-              and user-friendly applications.
+              I&apos;m a passionate Full Stack Developer currently working at <span className="text-[#4F46E5] font-semibold">Gothru</span>. 
+              With expertise in JavaScript, TypeScript, React.js, Next.js, Golang, Node.js, and Deno.js, 
+              I build fast, scalable, and user-friendly web applications that deliver exceptional digital experiences.
             </p>
             <p className="text-[#94A3B8] leading-relaxed">
-              My journey in tech started with curiosity and evolved into a
-              career where I get to work with cutting-edge technologies and
-              collaborate with talented teams. I believe in writing clean,
-              maintainable code and staying up-to-date with the latest industry
-              trends.
+              My journey in tech started at <span className="font-semibold text-[#F8FAFC]">STMIK Bandung</span>, where 
+              I gained solid foundations in software development. I had the incredible opportunity to intern at{" "}
+              <span className="font-semibold text-[#F8FAFC]">DSTI ITB</span> for 3 months, where I worked on impactful 
+              projects including developing a ticketing system for Bukit Pamoyanan Natural Tourism in Subang.
             </p>
             <p className="text-[#94A3B8] leading-relaxed">
-              When I&apos;m not coding, you can find me exploring new technologies,
-              contributing to open-source projects, or sharing knowledge with
-              the developer community.
+              Beyond frontend and backend development, I&apos;m also exploring DevOps practices and infrastructure 
+              management with Proxmox. I&apos;m always excited to learn new technologies, tackle challenging problems, 
+              and collaborate with talented teams to create innovative solutions.
             </p>
           </motion.div>
         </div>
