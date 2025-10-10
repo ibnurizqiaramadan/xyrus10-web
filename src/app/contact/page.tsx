@@ -10,8 +10,8 @@ import { DiscordIcon } from "@/components/icons/DiscordIcon"
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "dadanibnu61@gmail.com" },
-  { icon: MapPin, label: "Location", value: "Bandung, Indonesia" },
-  { icon: Phone, label: "Phone", value: "+62 xxx xxxx xxxx" },
+  { icon: MapPin, label: "Location", value: "Subang, Jawa Barat, Indonesia" },
+  { icon: Phone, label: "Phone", value: "+6282315100550" },
 ]
 
 const socialLinks = [
