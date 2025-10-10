@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 
 interface SectionTitleProps {
   title: string
@@ -8,11 +8,13 @@ interface SectionTitleProps {
 }
 
 export function SectionTitle({ title, subtitle }: SectionTitleProps) {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
       className="text-center mb-12"
     >
       <h2 className="text-4xl md:text-5xl font-bold text-[#F8FAFC] mb-4">

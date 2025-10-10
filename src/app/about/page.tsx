@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import Image from "next/image"
 import { Container } from "@/components/Container"
 import { SectionTitle } from "@/components/SectionTitle"
@@ -32,6 +32,8 @@ const interests = [
 ]
 
 export default function AboutPage() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <main className="pt-24 pb-16 min-h-screen">
       <Container>
@@ -43,9 +45,9 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
           {/* Image */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="relative"
           >
             <div className="relative w-full max-w-md mx-auto">
@@ -66,9 +68,9 @@ export default function AboutPage() {
 
           {/* Bio */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="space-y-4"
           >
             <h3 className="text-2xl font-bold text-[#F8FAFC]">
@@ -95,10 +97,10 @@ export default function AboutPage() {
 
         {/* Skills */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
           className="mb-16"
         >
           <h3 className="text-3xl font-bold text-[#F8FAFC] mb-8 text-center">
@@ -108,11 +110,11 @@ export default function AboutPage() {
             {skills.map((skill, index) => (
               <motion.div
                 key={skill}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileHover={{ scale: 1.1 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.3, delay: shouldReduceMotion ? 0 : index * 0.05 }}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.1 }}
                 className="glass-card px-6 py-3 rounded-2xl border border-white/10 hover:border-[#4F46E5]/50 transition-all duration-300 hover:glow-primary"
               >
                 <span className="text-[#F8FAFC] font-medium">{skill}</span>
@@ -123,10 +125,10 @@ export default function AboutPage() {
 
         {/* Interests */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
         >
           <h3 className="text-3xl font-bold text-[#F8FAFC] mb-8 text-center">
             What I Value
@@ -135,11 +137,11 @@ export default function AboutPage() {
             {interests.map((interest, index) => (
               <motion.div
                 key={interest.label}
-                initial={{ opacity: 0, y: 20 }}
+                initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.1 }}
+                whileHover={shouldReduceMotion ? {} : { y: -8 }}
                 className="glass-card p-6 rounded-2xl border border-white/10 hover:border-[#4F46E5]/50 transition-all duration-300 hover:glow-primary text-center"
               >
                 <div className="inline-flex items-center justify-center w-14 h-14 mb-4 rounded-full bg-[#4F46E5]/20 border border-[#4F46E5]/30">

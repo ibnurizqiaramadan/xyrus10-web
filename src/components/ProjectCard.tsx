@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Github, ExternalLink } from "lucide-react"
@@ -22,12 +22,14 @@ export function ProjectCard({
   demoUrl,
   index,
 }: ProjectCardProps) {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -8 }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.1 }}
+      whileHover={shouldReduceMotion ? {} : { y: -8 }}
       className="h-full"
     >
       <Card className="glass-card border-white/10 h-full flex flex-col transition-all duration-300 hover:border-[#4F46E5]/50 hover:glow-primary group">

@@ -29,6 +29,46 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
+/* Performance optimizations for mobile */
+@media (max-width: 768px) {
+  * {
+    /* Reduce animations on mobile */
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Optimize blur effects for mobile */
+  .blur-3xl,
+  [class*="blur-"] {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}
+
+/* Hardware acceleration for smooth animations */
+@media (prefers-reduced-motion: no-preference) {
+  .glass-card,
+  [class*="motion-"],
+  [class*="animate-"] {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
@@ -62,6 +102,15 @@ body {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimize glass-card for mobile */
+@media (max-width: 768px) {
+  .glass-card {
+    backdrop-filter: blur(8px);
+  }
 }
 
 .glow-primary {

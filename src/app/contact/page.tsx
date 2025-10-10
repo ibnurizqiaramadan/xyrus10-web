@@ -3,7 +3,7 @@
 import { Container } from "@/components/Container"
 import { SectionTitle } from "@/components/SectionTitle"
 import { ContactForm } from "@/components/ContactForm"
-import { motion } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { Mail, MapPin, Phone, Github, Linkedin, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
@@ -22,6 +22,8 @@ const socialLinks = [
 ]
 
 export default function ContactPage() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <main className="pt-24 pb-16 min-h-screen">
       <Container>
@@ -33,9 +35,9 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="glass-card p-8 rounded-2xl border border-white/10"
           >
             <h3 className="text-2xl font-bold text-[#F8FAFC] mb-6">
@@ -46,9 +48,9 @@ export default function ContactPage() {
 
           {/* Contact Info */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="space-y-8"
           >
             {/* Info Cards */}
@@ -59,9 +61,9 @@ export default function ContactPage() {
               {contactInfo.map((info, index) => (
                 <motion.div
                   key={info.label}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.1 }}
                   className="glass-card p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:border-[#4F46E5]/50 transition-all duration-300"
                 >
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#4F46E5]/20 border border-[#4F46E5]/30">
