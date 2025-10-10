@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { Container } from "@/components/Container"
 import { SectionTitle } from "@/components/SectionTitle"
 import { Code, Rocket, Coffee, Users } from "lucide-react"
@@ -38,18 +39,20 @@ export default function AboutPage() {
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="relative"
           >
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute inset-0 bg-gradient-to-r from-[#4F46E5] to-[#22D3EE] rounded-2xl blur-3xl opacity-20"></div>
               <div className="relative glass-card rounded-2xl p-2">
-                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-[#4F46E5] to-[#22D3EE]">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-9xl font-bold text-white/90">I</span>
-                  </div>
+                <div className="relative w-full aspect-square rounded-2xl overflow-hidden">
+                  <Image
+                    src="/avatar.jpg"
+                    alt="Ibnu"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -58,8 +61,7 @@ export default function AboutPage() {
           {/* Bio */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Github, Linkedin, Instagram } from "lucide-react"
 import { TypeAnimation } from "react-type-animation"
+import Image from "next/image"
 
 const socialLinks = [
   { icon: Github, href: "https://github.com", label: "GitHub" },
@@ -91,10 +92,14 @@ export function Hero() {
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute inset-0 bg-gradient-to-r from-[#4F46E5] to-[#22D3EE] rounded-full blur-3xl opacity-30 animate-pulse"></div>
               <div className="relative glass-card rounded-full p-2">
-                <div className="relative w-full aspect-square rounded-full overflow-hidden border-4 border-[#4F46E5]/30 bg-gradient-to-br from-[#4F46E5] to-[#22D3EE]">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-9xl font-bold text-white/90">I</span>
-                  </div>
+                <div className="relative w-full aspect-square rounded-full overflow-hidden border-4 border-[#4F46E5]/30">
+                  <Image
+                    src="/avatar.jpg"
+                    alt="Ibnu"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
                 </div>
               </div>
             </div>
