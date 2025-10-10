@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0D0F1A;
+  --color-foreground: #F8FAFC;
+  --color-card: hsl(222.2 84% 4.9%);
+  --color-card-foreground: #F8FAFC;
+  --color-popover: hsl(222.2 84% 4.9%);
+  --color-popover-foreground: #F8FAFC;
+  --color-primary: #4F46E5;
+  --color-primary-foreground: #F8FAFC;
+  --color-secondary: #22D3EE;
+  --color-secondary-foreground: #0D0F1A;
+  --color-muted: hsl(217.2 32.6% 17.5%);
+  --color-muted-foreground: #94A3B8;
+  --color-accent: #4F46E5;
+  --color-accent-foreground: #F8FAFC;
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: #F8FAFC;
+  --color-border: hsl(217.2 32.6% 17.5%);
+  --color-input: hsl(217.2 32.6% 17.5%);
+  --color-ring: #4F46E5;
+  --radius: 1rem;
+}
+
+body {
+  background-color: #0D0F1A;
+  color: #F8FAFC;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+}
