@@ -6,22 +6,34 @@ variables:
   # Docker configuration
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2375
   # GitLab Container Registry (self-hosted at https://gitlab.aghatis.id/)
-  # CI_REGISTRY, CI_REGISTRY_USER, CI_REGISTRY_PASSWORD are automatically set by GitLab
+  # Set registry URL if CI_REGISTRY is not automatically set
+  CI_REGISTRY: "${CI_REGISTRY:-registry.gitlab.aghatis.id}"
+  CI_REGISTRY_IMAGE: "${CI_REGISTRY_IMAGE:-${CI_REGISTRY}/${CI_PROJECT_PATH}}"
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   IMAGE_TAG_LATEST: $CI_REGISTRY_IMAGE:latest
-  # Alternative: Use custom registry URL if needed
-  # CI_REGISTRY: "registry.gitlab.aghatis.id"
 
 # Build Docker image
 build:docker:
   stage: build
   image: docker:24-dind
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
   before_script:
+    - echo "Waiting for Docker daemon to be ready..."
+    - until docker info; do sleep 1; done
     - echo "Logging in to GitLab Container Registry at $CI_REGISTRY..."
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - |
+      if [ -z "$CI_REGISTRY_USER" ] || [ -z "$CI_REGISTRY_PASSWORD" ]; then
+        echo "Warning: CI_REGISTRY_USER or CI_REGISTRY_PASSWORD not set. Using project deploy token or CI_JOB_TOKEN."
+        docker login -u ${CI_REGISTRY_USER:-gitlab-ci-token} -p ${CI_REGISTRY_PASSWORD:-$CI_JOB_TOKEN} $CI_REGISTRY
+      else
+        docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      fi
   script:
     - echo "Building Docker image..."
     - docker build -t $IMAGE_TAG -t $IMAGE_TAG_LATEST .
@@ -41,12 +53,22 @@ build:docker:release:
   stage: build
   image: docker:24-dind
   services:
-    - docker:24-dind
+    - name: docker:24-dind
+      alias: docker
   variables:
+    DOCKER_HOST: tcp://docker:2375
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
   before_script:
+    - echo "Waiting for Docker daemon to be ready..."
+    - until docker info; do sleep 1; done
     - echo "Logging in to GitLab Container Registry at $CI_REGISTRY..."
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - |
+      if [ -z "$CI_REGISTRY_USER" ] || [ -z "$CI_REGISTRY_PASSWORD" ]; then
+        echo "Warning: CI_REGISTRY_USER or CI_REGISTRY_PASSWORD not set. Using project deploy token or CI_JOB_TOKEN."
+        docker login -u ${CI_REGISTRY_USER:-gitlab-ci-token} -p ${CI_REGISTRY_PASSWORD:-$CI_JOB_TOKEN} $CI_REGISTRY
+      else
+        docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      fi
   script:
     - echo "Building Docker image for release $CI_COMMIT_TAG..."
     - docker build -t $IMAGE_TAG -t $IMAGE_TAG_LATEST .
