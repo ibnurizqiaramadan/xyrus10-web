@@ -5,7 +5,7 @@ stages:
 variables:
   # Docker configuration
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_CERTDIR: ""
   # GitLab Container Registry (self-hosted at https://gitlab.aghatis.id/)
   # CI_REGISTRY, CI_REGISTRY_USER, CI_REGISTRY_PASSWORD are automatically set by GitLab
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
