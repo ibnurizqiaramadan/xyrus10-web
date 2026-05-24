@@ -108,7 +108,7 @@ export function ParticlesBackground() {
                 value: 100,
               },
               opacity: {
-                value: { min: 0.2, max: 0.8 },
+                value: { min: 0.2, max: 0.7 },
               },
               shape: {
                 type: "circle",
