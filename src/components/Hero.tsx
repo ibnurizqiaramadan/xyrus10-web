@@ -17,7 +17,7 @@ export function Hero() {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 md:pt-0 pb-16 md:pb-0">
       {/* Background Decorative Element */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#2b7fff]/5 rounded-full blur-[120px] pointer-events-none" />
       
@@ -29,7 +29,7 @@ export function Hero() {
             transition={{ duration: shouldReduceMotion ? 0 : 0.8 }}
             className="mb-10 relative"
           >
-            <div className="relative w-40 h-40 md:w-56 md:h-56">
+            <div className="relative w-48 h-48 md:w-56 md:h-56">
               <div className="absolute inset-0 bg-gradient-to-tr from-[#2b7fff] to-[#60A5FA] rounded-3xl rotate-6 opacity-20 blur-2xl group-hover:rotate-12 transition-transform duration-500"></div>
               <div className="relative glass-card rounded-3xl p-1.5 h-full w-full rotate-0 hover:-rotate-2 transition-transform duration-500 overflow-hidden shadow-2xl">
                 <Image
