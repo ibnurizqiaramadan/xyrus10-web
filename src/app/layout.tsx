@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
 import { BottomNav } from "@/components/BottomNav";
 import { BackgroundEffects } from "@/components/BackgroundEffects";
+import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { LanguageProvider } from "@/lib/LanguageContext";
 
 const inter = Inter({
@@ -47,6 +48,7 @@ export default function RootLayout({
           <LanguageProvider>
             <div className="noise" />
             <BackgroundEffects />
+            <ParticlesBackground />
             <Navbar />
             <div className="pb-20 md:pb-0">
               {children}
