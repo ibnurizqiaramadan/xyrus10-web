@@ -59,7 +59,7 @@ export function ContactForm() {
         <Input
           id="name"
           {...register("name")}
-          className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#4F46E5] focus:ring-[#4F46E5]"
+          className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff]"
           placeholder="John Doe"
         />
         {errors.name && (
@@ -75,7 +75,7 @@ export function ContactForm() {
           id="email"
           type="email"
           {...register("email")}
-          className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#4F46E5] focus:ring-[#4F46E5]"
+          className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff]"
           placeholder="john@example.com"
         />
         {errors.email && (
@@ -90,7 +90,7 @@ export function ContactForm() {
         <Textarea
           id="message"
           {...register("message")}
-          className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#4F46E5] focus:ring-[#4F46E5] min-h-[150px]"
+          className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff] min-h-[150px]"
           placeholder="Your message here..."
         />
         {errors.message && (
@@ -101,7 +101,7 @@ export function ContactForm() {
       <Button
         type="submit"
         disabled={isSubmitting || isSubmitted}
-        className="w-full bg-gradient-to-r from-[#4F46E5] to-[#22D3EE] hover:opacity-90 transition-all duration-300 glow-primary"
+        className="w-full bg-gradient-to-r from-[#2b7fff] to-[#60A5FA] hover:opacity-90 transition-all duration-300 glow-primary"
       >
         {isSubmitting ? (
           "Sending..."

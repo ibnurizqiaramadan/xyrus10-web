@@ -62,8 +62,8 @@ export function BottomNav() {
               className={cn(
                 "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-2xl transition-all duration-300 min-w-[60px]",
                 isActive
-                  ? "bg-[#4F46E5]/20 text-[#4F46E5]"
-                  : "text-[#94A3B8] hover:text-[#4F46E5] hover:bg-white/5"
+                  ? "bg-[#2b7fff]/20 text-[#2b7fff]"
+                  : "text-[#94A3B8] hover:text-[#2b7fff] hover:bg-white/5"
               )}
             >
               <Icon 
@@ -75,7 +75,7 @@ export function BottomNav() {
               />
               <span className="text-xs font-medium">{item.name}</span>
               {isActive && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#4F46E5] rounded-full" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#2b7fff] rounded-full" />
               )}
             </a>
           )

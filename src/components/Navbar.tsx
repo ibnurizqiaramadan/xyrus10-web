@@ -75,7 +75,7 @@ export function Navbar() {
             onClick={(e) => scrollToSection(e, "#home")}
             className="text-2xl font-bold text-[#F8FAFC]"
           >
-            Ibnu<span className="text-[#4F46E5]">Rizqia</span>
+            Ibnu<span className="text-[#2b7fff]">Rizqia</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -86,9 +86,9 @@ export function Navbar() {
                 href={item.href}
                 onClick={(e) => scrollToSection(e, item.href)}
                 className={cn(
-                  "text-sm font-medium transition-all duration-300 hover:text-[#4F46E5]",
+                  "text-sm font-medium transition-all duration-300 hover:text-[#2b7fff]",
                   activeSection === item.href.replace("#", "")
-                    ? "text-[#4F46E5]"
+                    ? "text-[#2b7fff]"
                     : "text-[#94A3B8]"
                 )}
               >
@@ -125,7 +125,7 @@ export function Navbar() {
                 className={cn(
                   "block py-2 text-sm font-medium transition-all duration-300",
                   activeSection === item.href.replace("#", "")
-                    ? "text-[#4F46E5]"
+                    ? "text-[#2b7fff]"
                     : "text-[#94A3B8]"
                 )}
               >

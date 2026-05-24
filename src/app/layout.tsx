@@ -12,13 +12,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Ibnu Rizqia Ramadan - Full Stack Developer @ Gothru",
-  description: "Full Stack Developer specializing in JavaScript, TypeScript, React.js, Next.js, Golang, Node.js, and Deno.js. Building scalable web applications and exploring DevOps with Proxmox.",
-  keywords: ["portfolio", "full stack developer", "javascript", "typescript", "react", "nextjs", "golang", "nodejs", "deno", "devops", "proxmox", "web development"],
+  title: "Ibnu Rizqia Ramadan - AI-Powered Fullstack Engineer & Infrastructure Specialist @ GoThru.co",
+  description: "AI-Powered Fullstack Engineer & Infrastructure Specialist di GoThru.co. Berfokus pada pembangunan aplikasi web berkinerja tinggi serta pengelolaan infrastruktur server yang scalable.",
+  keywords: ["portfolio", "full stack engineer", "infrastructure specialist", "gothru.co", "GoThru.co", "javascript", "typescript", "react", "nextjs", "golang", "fiber", "bun", "drizzle orm", "devops", "proxmox", "lxc", "web development"],
   authors: [{ name: "Ibnu Rizqia Ramadan" }],
   openGraph: {
-    title: "Ibnu Rizqia Ramadan - Full Stack Developer @ Gothru",
-    description: "Full Stack Developer specializing in modern web technologies. STMIK Bandung graduate with internship experience at DSTI ITB.",
+    title: "Ibnu Rizqia Ramadan - AI-Powered Fullstack Engineer & Infrastructure Specialist @ GoThru.co",
+    description: "Menembus batas antara software development dan system administration dengan dukungan teknologi AI. Membangun aplikasi web modern dengan Next.js & Go, mengarsiteki Proxmox & LXC.",
     type: "website",
   },
 };
@@ -43,6 +43,7 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
+          <div className="noise" />
           <BackgroundEffects />
           <Navbar />
           <div className="pb-20 md:pb-0">

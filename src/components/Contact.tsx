@@ -6,7 +6,6 @@ import { ContactForm } from "@/components/ContactForm"
 import { motion, useReducedMotion } from "framer-motion"
 import { Mail, MapPin, Phone } from "lucide-react"
 import { Github, Linkedin, Instagram } from "@/components/icons/BrandIcons"
-import { Button } from "@/components/ui/button"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
 
 const contactInfo = [
@@ -26,85 +25,74 @@ export function Contact() {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <section id="contact" className="py-24">
+    <section id="contact" className="py-24 relative overflow-hidden">
       <Container>
         <SectionTitle
           title="Get In Touch"
-          subtitle="Let's connect! Whether you want to discuss web development, backend technologies, or DevOps - I'd love to hear from you"
+          subtitle="Let's build something amazing together. Reach out for collaborations or just a friendly chat."
         />
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
+        <div className="grid lg:grid-cols-12 gap-16 items-start">
+          {/* Contact Info & Socials */}
           <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -50 }}
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
-            className="glass-card p-8 rounded-2xl border border-white/10"
+            transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
+            className="lg:col-span-5 space-y-12"
           >
-            <h3 className="text-2xl font-bold text-[#F8FAFC] mb-6">
-              Send a Message
-            </h3>
-            <ContactForm />
-          </motion.div>
-
-          {/* Contact Info */}
-          <motion.div
-            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
-            className="space-y-8"
-          >
-            {/* Info Cards */}
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-[#F8FAFC] mb-6">
-                Contact Information
-              </h3>
-              {contactInfo.map((info, index) => (
-                <motion.div
-                  key={info.label}
-                  initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.1 }}
-                  className="glass-card p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:border-[#4F46E5]/50 transition-all duration-300"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#4F46E5]/20 border border-[#4F46E5]/30">
-                    <info.icon className="w-6 h-6 text-[#4F46E5]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#94A3B8]">{info.label}</p>
-                    <p className="text-[#F8FAFC] font-medium">{info.value}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Social Links */}
             <div>
-              <h3 className="text-2xl font-bold text-[#F8FAFC] mb-6">
-                Connect With Me
+              <h3 className="text-3xl font-bold text-[#F8FAFC] mb-8 tracking-tight">
+                Let&apos;s <span className="text-[#2b7fff]">Connect</span>
               </h3>
-              <div className="flex gap-4">
-                {socialLinks.map((social) => (
-                  <Button
-                    key={social.label}
-                    asChild
-                    size="lg"
-                    className="glass-card bg-white/5 hover:bg-[#4F46E5]/20 border border-white/10 hover:border-[#4F46E5]/50 transition-all duration-300 hover:glow-primary"
-                  >
-                    <a
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                    >
-                      <social.icon className="w-5 h-5" />
-                    </a>
-                  </Button>
+              <div className="space-y-6">
+                {contactInfo.map((info) => (
+                  <div key={info.label} className="flex items-center gap-6 group">
+                    <div className="w-14 h-14 rounded-2xl bg-[#2b7fff]/10 border border-[#2b7fff]/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <info.icon className="w-6 h-6 text-[#2b7fff]" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#2b7fff] mb-1">{info.label}</p>
+                      <p className="text-[#F8FAFC] font-medium text-lg">{info.value}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <h4 className="text-[#94A3B8] font-medium mb-6 flex items-center gap-2">
+                <div className="w-8 h-px bg-[#2b7fff]/30" />
+                Find me on
+              </h4>
+              <div className="flex flex-wrap gap-4">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="glass-card p-4 rounded-2xl hover:border-[#2b7fff]/40 hover:bg-[#2b7fff]/5 transition-all duration-300 group"
+                    aria-label={social.label}
+                  >
+                    <social.icon className="w-6 h-6 text-[#94A3B8] group-hover:text-[#2b7fff] transition-colors" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
+            className="lg:col-span-7"
+          >
+            <div className="glass-card p-10 rounded-[2.5rem] border-white/5 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent opacity-20" />
+              <ContactForm />
             </div>
           </motion.div>
         </div>

@@ -7,19 +7,19 @@
   --color-card-foreground: #F8FAFC;
   --color-popover: hsl(222.2 84% 4.9%);
   --color-popover-foreground: #F8FAFC;
-  --color-primary: #4F46E5;
+  --color-primary: #2b7fff;
   --color-primary-foreground: #F8FAFC;
-  --color-secondary: #22D3EE;
+  --color-secondary: #60A5FA;
   --color-secondary-foreground: #0D0F1A;
   --color-muted: hsl(217.2 32.6% 17.5%);
   --color-muted-foreground: #94A3B8;
-  --color-accent: #4F46E5;
+  --color-accent: #2b7fff;
   --color-accent-foreground: #F8FAFC;
   --color-destructive: hsl(0 62.8% 30.6%);
   --color-destructive-foreground: #F8FAFC;
   --color-border: hsl(217.2 32.6% 17.5%);
   --color-input: hsl(217.2 32.6% 17.5%);
-  --color-ring: #4F46E5;
+  --color-ring: #2b7fff;
   --radius: 1rem;
 }
 
@@ -81,44 +81,69 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #4F46E5 0%, #22D3EE 100%);
+  background: linear-gradient(180deg, #2b7fff 0%, #60A5FA 100%);
   border-radius: 10px;
   border: 2px solid #0D0F1A;
   transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #6366F1 0%, #06B6D4 100%);
-  box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+  background: linear-gradient(180deg, #3b82f6 0%, #93c5fd 100%);
+  box-shadow: 0 0 10px rgba(43, 127, 255, 0.5);
 }
 
 /* Firefox Scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #4F46E5 #0D0F1A;
+  scrollbar-color: #2b7fff #0D0F1A;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   transform: translateZ(0);
   will-change: transform;
+}
+
+.noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.03;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* Optimize glass-card for mobile */
 @media (max-width: 768px) {
   .glass-card {
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.8);
   }
 }
 
 .glow-primary {
-  box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 0 30px rgba(43, 127, 255, 0.2);
 }
 
 .glow-secondary {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+  box-shadow: 0 0 30px rgba(96, 165, 250, 0.2);
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #F8FAFC, #94A3B8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-padding {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
 }
 
 /* Safe area for mobile devices (notch support) */

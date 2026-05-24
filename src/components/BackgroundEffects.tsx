@@ -35,7 +35,7 @@ export function BackgroundEffects() {
             left: orb.x,
             top: orb.y,
             background: `radial-gradient(circle, ${
-              index % 2 === 0 ? "#4F46E5" : "#22D3EE"
+              index % 2 === 0 ? "#2b7fff" : "#60A5FA"
             } 0%, transparent 70%)`,
             willChange: shouldAnimate ? "transform" : "auto",
           }}

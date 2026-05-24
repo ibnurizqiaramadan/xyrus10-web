@@ -12,7 +12,7 @@ export function GradientDivider() {
         whileInView={{ opacity: 1, scaleX: 1 }}
         viewport={{ once: true }}
         transition={{ duration: shouldReduceMotion ? 0 : 1 }}
-        className="h-px w-full bg-gradient-to-r from-transparent via-[#4F46E5] to-transparent"
+        className="h-px w-full bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent"
       />
     </div>
   )
