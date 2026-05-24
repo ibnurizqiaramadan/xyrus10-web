@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion"
 import { Mail, MapPin, Phone } from "lucide-react"
 import { Github, Linkedin, Instagram } from "@/components/icons/BrandIcons"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
+import { useLanguage } from "@/lib/LanguageContext"
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "dadanibnu61@gmail.com" },
@@ -23,13 +24,17 @@ const socialLinks = [
 
 export function Contact() {
   const shouldReduceMotion = useReducedMotion()
+  const { language } = useLanguage()
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
       <Container>
         <SectionTitle
-          title="Get In Touch"
-          subtitle="Let's build something amazing together. Reach out for collaborations or just a friendly chat."
+          title={language === "id" ? "Hubungi Saya" : "Get In Touch"}
+          subtitle={language === "id"
+            ? "Mari kita buat sesuatu yang luar biasa bersama. Hubungi saya untuk kolaborasi atau sekadar mengobrol santai."
+            : "Let's build something amazing together. Reach out for collaborations or just a friendly chat."
+          }
         />
 
         <div className="grid lg:grid-cols-12 gap-16 items-start">
@@ -43,7 +48,11 @@ export function Contact() {
           >
             <div>
               <h3 className="text-3xl font-bold text-[#F8FAFC] mb-8 tracking-tight">
-                Let&apos;s <span className="text-[#2b7fff]">Connect</span>
+                {language === "id" ? (
+                  <>Mari <span className="text-[#2b7fff]">Terhubung</span></>
+                ) : (
+                  <>Let&apos;s <span className="text-[#2b7fff]">Connect</span></>
+                )}
               </h3>
               <div className="space-y-6">
                 {contactInfo.map((info) => (
@@ -52,7 +61,10 @@ export function Contact() {
                       <info.icon className="w-6 h-6 text-[#2b7fff]" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-[#2b7fff] mb-1">{info.label}</p>
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#2b7fff] mb-1">
+                        {language === "id" && info.label === "Location" ? "Lokasi" : 
+                         language === "id" && info.label === "Phone" ? "Telepon" : info.label}
+                      </p>
                       <p className="text-[#F8FAFC] font-medium text-lg">{info.value}</p>
                     </div>
                   </div>
@@ -63,7 +75,7 @@ export function Contact() {
             <div>
               <h4 className="text-[#94A3B8] font-medium mb-6 flex items-center gap-2">
                 <div className="w-8 h-px bg-[#2b7fff]/30" />
-                Find me on
+                {language === "id" ? "Temukan saya di" : "Find me on"}
               </h4>
               <div className="flex flex-wrap gap-4">
                 {socialLinks.map((social) => (

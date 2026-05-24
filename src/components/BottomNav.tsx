@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Home, User, Briefcase, Mail } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/LanguageContext"
 
 const navItems = [
   { name: "Home", href: "#home", icon: Home },
@@ -13,6 +14,17 @@ const navItems = [
 
 export function BottomNav() {
   const [activeSection, setActiveSection] = useState("home")
+  const { language } = useLanguage()
+
+  const getNavName = (itemHref: string) => {
+    switch (itemHref) {
+      case "#home": return "Home"
+      case "#about": return language === "id" ? "Tentang" : "About"
+      case "#projects": return language === "id" ? "Proyek" : "Projects"
+      case "#contact": return language === "id" ? "Kontak" : "Contact"
+      default: return ""
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,7 +85,7 @@ export function BottomNav() {
                   isActive && "scale-110"
                 )}
               />
-              <span className="text-xs font-medium">{item.name}</span>
+              <span className="text-xs font-medium">{getNavName(item.href)}</span>
               {isActive && (
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#2b7fff] rounded-full" />
               )}

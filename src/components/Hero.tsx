@@ -5,6 +5,7 @@ import { Github, Linkedin, Instagram } from "@/components/icons/BrandIcons"
 import { TypeAnimation } from "react-type-animation"
 import Image from "next/image"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
+import { useLanguage } from "@/lib/LanguageContext"
 
 const socialLinks = [
   { icon: Github, href: "https://github.com/ibnurizqiaramadan", label: "GitHub" },
@@ -15,6 +16,7 @@ const socialLinks = [
 
 export function Hero() {
   const shouldReduceMotion = useReducedMotion()
+  const { language } = useLanguage()
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 md:pt-0 pb-16 md:pb-0">
@@ -73,7 +75,15 @@ export function Hero() {
               transition={{ delay: shouldReduceMotion ? 0 : 0.4 }}
               className="text-lg md:text-xl text-[#94A3B8] mb-12 leading-relaxed max-w-2xl font-light mx-auto"
             >
-              Menembus batas antara <span className="text-[#F8FAFC] font-medium">software development</span> dan <span className="text-[#F8FAFC] font-medium">system administration</span> dengan dukungan teknologi AI. Saya membangun aplikasi web modern yang cepat dengan <span className="text-[#F8FAFC] font-medium">Next.js, Go, Node.js, & TypeScript</span>, sekaligus mengarsiteki infrastruktur server berbasis <span className="text-[#F8FAFC] font-medium">Proxmox & LXC</span> secara efisien. Berfokus pada efisiensi kode, kecepatan delivery, dan reliabilitas sistem yang kokoh.
+              {language === "id" ? (
+                <>
+                  Menembus batas antara <span className="text-[#F8FAFC] font-medium">software development</span> dan <span className="text-[#F8FAFC] font-medium">system administration</span> dengan dukungan teknologi AI. Saya membangun aplikasi web modern yang cepat dengan <span className="text-[#F8FAFC] font-medium">Next.js, Go, Node.js, & TypeScript</span>, sekaligus mengarsiteki infrastruktur server berbasis <span className="text-[#F8FAFC] font-medium">Proxmox & LXC</span> secara efisien. Berfokus pada efisiensi kode, kecepatan delivery, dan reliabilitas sistem yang kokoh.
+                </>
+              ) : (
+                <>
+                  Bridging the gap between <span className="text-[#F8FAFC] font-medium">software development</span> and <span className="text-[#F8FAFC] font-medium">system administration</span> powered by AI. I build fast, modern web applications using <span className="text-[#F8FAFC] font-medium">Next.js, Go, Node.js, & TypeScript</span>, while efficiently architecting server infrastructure based on <span className="text-[#F8FAFC] font-medium">Proxmox & LXC</span>. Focused on code efficiency, delivery speed, and robust system reliability.
+                </>
+              )}
             </motion.p>
 
             {/* Social Links */}

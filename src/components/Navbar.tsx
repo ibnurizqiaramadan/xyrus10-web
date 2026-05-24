@@ -5,6 +5,7 @@ import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/lib/LanguageContext"
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -18,6 +19,7 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
   const shouldReduceMotion = useReducedMotion()
+  const { language, setLanguage } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +58,16 @@ export function Navbar() {
     setIsMobileMenuOpen(false)
   }
 
+  const getNavName = (itemHref: string) => {
+    switch (itemHref) {
+      case "#home": return "Home"
+      case "#about": return language === "id" ? "Tentang" : "About"
+      case "#projects": return language === "id" ? "Proyek" : "Projects"
+      case "#contact": return language === "id" ? "Kontak" : "Contact"
+      default: return ""
+    }
+  }
+
   return (
     <motion.nav
       initial={shouldReduceMotion ? { y: 0 } : { y: -100 }}
@@ -92,18 +104,53 @@ export function Navbar() {
                     : "text-[#94A3B8]"
                 )}
               >
-                {item.name}
+                {getNavName(item.href)}
               </a>
             ))}
+
+            {/* Language Switcher */}
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-full p-0.5 text-[10px] font-bold">
+              <button
+                onClick={() => setLanguage("id")}
+                className={cn(
+                  "px-2 py-0.5 rounded-full transition-all duration-300",
+                  language === "id"
+                    ? "bg-[#2b7fff] text-[#F8FAFC] shadow-sm"
+                    : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                )}
+              >
+                ID
+              </button>
+              <button
+                onClick={() => setLanguage("en")}
+                className={cn(
+                  "px-2 py-0.5 rounded-full transition-all duration-300",
+                  language === "en"
+                    ? "bg-[#2b7fff] text-[#F8FAFC] shadow-sm"
+                    : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                )}
+              >
+                EN
+              </button>
+            </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-[#F8FAFC]"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile Menu Button & Language Switcher */}
+          <div className="md:hidden flex items-center gap-4">
+            <button
+              onClick={() => setLanguage(language === "id" ? "en" : "id")}
+              className="text-[10px] font-bold uppercase border border-white/10 px-2.5 py-1 rounded-full bg-white/5 text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
+            >
+              {language === "id" ? "EN" : "ID"}
+            </button>
+
+            <button
+              className="text-[#F8FAFC]"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -129,7 +176,7 @@ export function Navbar() {
                     : "text-[#94A3B8]"
                 )}
               >
-                {item.name}
+                {getNavName(item.href)}
               </a>
             ))}
           </div>

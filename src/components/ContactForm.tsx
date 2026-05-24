@@ -10,19 +10,21 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Send } from "lucide-react"
 import { useState } from "react"
-
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-})
-
-type ContactFormData = z.infer<typeof contactSchema>
+import { useLanguage } from "@/lib/LanguageContext"
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const shouldReduceMotion = useReducedMotion()
+  const { language } = useLanguage()
+
+  const contactSchema = z.object({
+    name: z.string().min(2, language === "id" ? "Nama minimal harus 2 karakter" : "Name must be at least 2 characters"),
+    email: z.string().email(language === "id" ? "Alamat email tidak valid" : "Invalid email address"),
+    message: z.string().min(10, language === "id" ? "Pesan minimal harus 10 karakter" : "Message must be at least 10 characters"),
+  })
+
+  type ContactFormData = z.infer<typeof contactSchema>
 
   const {
     register,
@@ -54,7 +56,7 @@ export function ContactForm() {
     >
       <div className="space-y-2">
         <Label htmlFor="name" className="text-[#F8FAFC]">
-          Name
+          {language === "id" ? "Nama" : "Name"}
         </Label>
         <Input
           id="name"
@@ -85,13 +87,13 @@ export function ContactForm() {
 
       <div className="space-y-2">
         <Label htmlFor="message" className="text-[#F8FAFC]">
-          Message
+          {language === "id" ? "Pesan" : "Message"}
         </Label>
         <Textarea
           id="message"
           {...register("message")}
           className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff] min-h-[150px]"
-          placeholder="Your message here..."
+          placeholder={language === "id" ? "Tulis pesan Anda di sini..." : "Your message here..."}
         />
         {errors.message && (
           <p className="text-sm text-red-400">{errors.message.message}</p>
@@ -104,13 +106,13 @@ export function ContactForm() {
         className="w-full bg-gradient-to-r from-[#2b7fff] to-[#60A5FA] hover:opacity-90 transition-all duration-300 glow-primary"
       >
         {isSubmitting ? (
-          "Sending..."
+          language === "id" ? "Mengirim..." : "Sending..."
         ) : isSubmitted ? (
-          "Sent!"
+          language === "id" ? "Terkirim!" : "Sent!"
         ) : (
           <>
             <Send className="mr-2 h-4 w-4" />
-            Send Message
+            {language === "id" ? "Kirim Pesan" : "Send Message"}
           </>
         )}
       </Button>

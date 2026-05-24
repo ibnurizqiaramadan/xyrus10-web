@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
 import { BottomNav } from "@/components/BottomNav";
 import { BackgroundEffects } from "@/components/BackgroundEffects";
+import { LanguageProvider } from "@/lib/LanguageContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,13 +44,15 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <div className="noise" />
-          <BackgroundEffects />
-          <Navbar />
-          <div className="pb-20 md:pb-0">
-            {children}
-          </div>
-          <BottomNav />
+          <LanguageProvider>
+            <div className="noise" />
+            <BackgroundEffects />
+            <Navbar />
+            <div className="pb-20 md:pb-0">
+              {children}
+            </div>
+            <BottomNav />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
