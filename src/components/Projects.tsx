@@ -26,9 +26,9 @@ const projects = [
   },
 ]
 
-export default function ProjectsPage() {
+export function Projects() {
   return (
-    <main className="pt-24 pb-16 min-h-screen">
+    <section id="projects" className="py-24">
       <Container>
         <SectionTitle
           title="My Projects"
@@ -41,6 +41,6 @@ export default function ProjectsPage() {
           ))}
         </div>
       </Container>
-    </main>
+    </section>
   )
 }

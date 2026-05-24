@@ -3,7 +3,8 @@
 import { motion, useReducedMotion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Github, ExternalLink } from "lucide-react"
+import { ExternalLink } from "lucide-react"
+import { Github } from "@/components/icons/BrandIcons"
 
 interface ProjectCardProps {
   title: string

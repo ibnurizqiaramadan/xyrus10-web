@@ -4,7 +4,8 @@ import { Container } from "@/components/Container"
 import { SectionTitle } from "@/components/SectionTitle"
 import { ContactForm } from "@/components/ContactForm"
 import { motion, useReducedMotion } from "framer-motion"
-import { Mail, MapPin, Phone, Github, Linkedin, Instagram } from "lucide-react"
+import { Mail, MapPin, Phone } from "lucide-react"
+import { Github, Linkedin, Instagram } from "@/components/icons/BrandIcons"
 import { Button } from "@/components/ui/button"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
 
@@ -21,11 +22,11 @@ const socialLinks = [
   { icon: DiscordIcon, href: "http://discordapp.com/users/257147179297144833", label: "Discord: xyrus10" },
 ]
 
-export default function ContactPage() {
+export function Contact() {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <main className="pt-24 pb-16 min-h-screen">
+    <section id="contact" className="py-24">
       <Container>
         <SectionTitle
           title="Get In Touch"
@@ -36,7 +37,8 @@ export default function ContactPage() {
           {/* Contact Form */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="glass-card p-8 rounded-2xl border border-white/10"
           >
@@ -49,7 +51,8 @@ export default function ContactPage() {
           {/* Contact Info */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="space-y-8"
           >
@@ -62,7 +65,8 @@ export default function ContactPage() {
                 <motion.div
                   key={info.label}
                   initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.1 }}
                   className="glass-card p-4 rounded-2xl border border-white/10 flex items-center gap-4 hover:border-[#4F46E5]/50 transition-all duration-300"
                 >
@@ -102,28 +106,9 @@ export default function ContactPage() {
                 ))}
               </div>
             </div>
-
-            {/* Availability */}
-            {/* <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="glass-card p-6 rounded-2xl border border-white/10"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <h4 className="text-lg font-semibold text-[#F8FAFC]">
-                  Available for Work
-                </h4>
-              </div>
-              <p className="text-[#94A3B8] text-sm">
-                I&apos;m currently available for freelance projects and full-time
-                opportunities. Feel free to reach out!
-              </p>
-            </motion.div> */}
           </motion.div>
         </div>
       </Container>
-    </main>
+    </section>
   )
 }

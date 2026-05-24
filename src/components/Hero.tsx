@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useReducedMotion } from "framer-motion"
-import { Github, Linkedin, Instagram } from "lucide-react"
+import { Github, Linkedin, Instagram } from "@/components/icons/BrandIcons"
 import { TypeAnimation } from "react-type-animation"
 import Image from "next/image"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"

@@ -31,11 +31,11 @@ const interests = [
   { icon: Users, label: "Collaboration", description: "Building great products with teams" },
 ]
 
-export default function AboutPage() {
+export function About() {
   const shouldReduceMotion = useReducedMotion()
 
   return (
-    <main className="pt-24 pb-16 min-h-screen">
+    <section id="about" className="py-24">
       <Container>
         <SectionTitle
           title="About Me"
@@ -46,7 +46,8 @@ export default function AboutPage() {
           {/* Image */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="relative"
           >
@@ -69,7 +70,8 @@ export default function AboutPage() {
           {/* Bio */}
           <motion.div
             initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
             className="space-y-4"
           >
@@ -158,6 +160,6 @@ export default function AboutPage() {
           </div>
         </motion.div>
       </Container>
-    </main>
+    </section>
   )
 }
