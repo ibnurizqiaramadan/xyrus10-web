@@ -9,7 +9,10 @@ export function ParticlesBackground() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const frame = requestAnimationFrame(() => {
+      setMounted(true)
+    })
+    return () => cancelAnimationFrame(frame)
   }, [])
 
   const initEngine = async (engine: Engine) => {
@@ -31,30 +34,21 @@ export function ParticlesBackground() {
                 value: "transparent",
               },
             },
-            fpsLimit: 120,
+            fpsLimit: 60,
             fullScreen: {
               enable: true,
               zIndex: -20,
             },
+            pauseOnBlur: true,
             interactivity: {
               detectsOn: "window",
               events: {
                 onHover: {
                   enable: false,
-                  mode: "grab",
                 },
                 resize: {
                   enable: true,
-                  delay: 0.5,
-                },
-              },
-              modes: {
-                grab: {
-                  distance: 180,
-                  links: {
-                    opacity: 0.35,
-                    color: "#2b7fff",
-                  },
+                  delay: 1,
                 },
               },
             },
@@ -64,10 +58,13 @@ export function ParticlesBackground() {
               },
               links: {
                 color: "#2b7fff",
-                distance: 130,
+                distance: 120,
                 enable: true,
-                opacity: 0.12,
+                opacity: 0.1,
                 width: 1,
+                triangles: {
+                  enable: false,
+                },
               },
               move: {
                 direction: "none",
@@ -75,8 +72,8 @@ export function ParticlesBackground() {
                 outModes: {
                   default: "out",
                 },
-                random: true,
-                speed: 1.0,
+                random: false,
+                speed: 0.8,
                 straight: false,
               },
               number: {
@@ -85,7 +82,7 @@ export function ParticlesBackground() {
                   width: 1920,
                   height: 1080,
                 },
-                value: 100,
+                value: 65,
               },
               opacity: {
                 value: { min: 0.2, max: 0.7 },
