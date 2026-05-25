@@ -10,6 +10,7 @@ import { useLanguage } from "@/lib/LanguageContext"
 const navItems = [
   { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
+  { name: "Experience", href: "#experience" },
   { name: "Projects", href: "#projects" },
   { name: "Contact", href: "#contact" },
 ]
@@ -26,7 +27,7 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 10)
 
       // Update active section based on scroll position
-      const sections = ["home", "about", "projects", "contact"]
+      const sections = ["home", "about", "experience", "projects", "contact"]
       const currentSection = sections.find((section) => {
         const element = document.getElementById(section)
         if (element) {
@@ -62,6 +63,7 @@ export function Navbar() {
     switch (itemHref) {
       case "#home": return "Home"
       case "#about": return language === "id" ? "Tentang" : "About"
+      case "#experience": return language === "id" ? "Pengalaman" : "Experience"
       case "#projects": return language === "id" ? "Proyek" : "Projects"
       case "#contact": return language === "id" ? "Kontak" : "Contact"
       default: return ""
@@ -113,7 +115,7 @@ export function Navbar() {
               <button
                 onClick={() => setLanguage("id")}
                 className={cn(
-                  "px-2 py-0.5 rounded-full transition-all duration-300",
+                  "px-2 py-0.5 rounded-full transition-all duration-300 cursor-pointer",
                   language === "id"
                     ? "bg-[#2b7fff] text-[#F8FAFC] shadow-sm"
                     : "text-[#94A3B8] hover:text-[#F8FAFC]"
@@ -124,7 +126,7 @@ export function Navbar() {
               <button
                 onClick={() => setLanguage("en")}
                 className={cn(
-                  "px-2 py-0.5 rounded-full transition-all duration-300",
+                  "px-2 py-0.5 rounded-full transition-all duration-300 cursor-pointer",
                   language === "en"
                     ? "bg-[#2b7fff] text-[#F8FAFC] shadow-sm"
                     : "text-[#94A3B8] hover:text-[#F8FAFC]"
@@ -139,7 +141,7 @@ export function Navbar() {
           <div className="md:hidden flex items-center gap-4">
             <button
               onClick={() => setLanguage(language === "id" ? "en" : "id")}
-              className="text-[10px] font-bold uppercase border border-white/10 px-2.5 py-1 rounded-full bg-white/5 text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
+              className="text-[10px] font-bold uppercase border border-white/10 px-2.5 py-1 rounded-full bg-white/5 text-[#94A3B8] hover:text-[#F8FAFC] transition-colors cursor-pointer"
             >
               {language === "id" ? "EN" : "ID"}
             </button>

@@ -7,6 +7,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { BackgroundEffects } from "@/components/BackgroundEffects";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { LanguageProvider } from "@/lib/LanguageContext";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({
               {children}
             </div>
             <BottomNav />
+            <ScrollToTop />
           </LanguageProvider>
         </ThemeProvider>
       </body>

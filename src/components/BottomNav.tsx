@@ -1,14 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Home, User, Briefcase, Mail } from "lucide-react"
+import { Home, User, Briefcase, Mail, Code } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/LanguageContext"
 
 const navItems = [
   { name: "Home", href: "#home", icon: Home },
   { name: "About", href: "#about", icon: User },
-  { name: "Projects", href: "#projects", icon: Briefcase },
+  { name: "Experience", href: "#experience", icon: Briefcase },
+  { name: "Projects", href: "#projects", icon: Code },
   { name: "Contact", href: "#contact", icon: Mail },
 ]
 
@@ -20,6 +21,7 @@ export function BottomNav() {
     switch (itemHref) {
       case "#home": return "Home"
       case "#about": return language === "id" ? "Tentang" : "About"
+      case "#experience": return language === "id" ? "Pengalaman" : "Experience"
       case "#projects": return language === "id" ? "Proyek" : "Projects"
       case "#contact": return language === "id" ? "Kontak" : "Contact"
       default: return ""
@@ -28,7 +30,7 @@ export function BottomNav() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "projects", "contact"]
+      const sections = ["home", "about", "experience", "projects", "contact"]
       const currentSection = sections.find((section) => {
         const element = document.getElementById(section)
         if (element) {

@@ -18,8 +18,19 @@ export function Hero() {
   const shouldReduceMotion = useReducedMotion()
   const { language } = useLanguage()
 
+  const scrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    const element = document.getElementById("contact")
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 64,
+        behavior: "smooth",
+      })
+    }
+  }
+
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-24 md:pt-0 pb-16 md:pb-0">
+    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-32 md:pt-40 pb-20">
       {/* Background Decorative Element */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#2b7fff]/5 rounded-full blur-[120px] pointer-events-none" />
       
@@ -85,6 +96,32 @@ export function Hero() {
                 </>
               )}
             </motion.p>
+
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: shouldReduceMotion ? 0 : 0.5 }}
+              className="flex flex-wrap justify-center gap-4 mb-12"
+            >
+              <a
+                href="/cv-ibnu-rizqia.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass-card px-8 py-3.5 rounded-full font-semibold text-[#F8FAFC] hover:bg-[#2b7fff]/10 hover:border-[#2b7fff]/50 transition-all duration-300 flex items-center gap-2 group"
+              >
+                {language === "id" ? "Unduh CV" : "Download CV"}
+                <svg className="w-5 h-5 text-[#94A3B8] group-hover:text-[#2b7fff] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              </a>
+              <a
+                href="#contact"
+                onClick={scrollToContact}
+                className="bg-gradient-to-r from-[#2b7fff] to-[#60A5FA] px-8 py-3.5 rounded-full font-semibold text-white hover:opacity-90 transition-all duration-300 shadow-[0_0_20px_rgba(43,127,255,0.3)] hover:shadow-[0_0_30px_rgba(43,127,255,0.5)] flex items-center gap-2"
+              >
+                {language === "id" ? "Mari Berdiskusi" : "Let's Talk"}
+              </a>
+            </motion.div>
 
             {/* Social Links */}
             <motion.div
