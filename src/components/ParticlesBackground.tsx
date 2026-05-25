@@ -7,34 +7,9 @@ import type { Engine } from "@tsparticles/engine"
 
 export function ParticlesBackground() {
   const [mounted, setMounted] = useState(false)
-  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 })
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true)
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }, 0)
-
-    let timeoutId: ReturnType<typeof setTimeout>
-    const handleResize = () => {
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        setDimensions({
-          width: window.innerWidth,
-          height: window.innerHeight,
-        })
-      }, 200)
-    }
-
-    window.addEventListener("resize", handleResize)
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener("resize", handleResize)
-      clearTimeout(timeoutId)
-    }
+    setMounted(true)
   }, [])
 
   const initEngine = async (engine: Engine) => {
@@ -57,6 +32,10 @@ export function ParticlesBackground() {
               },
             },
             fpsLimit: 120,
+            fullScreen: {
+              enable: true,
+              zIndex: -20,
+            },
             interactivity: {
               detectsOn: "window",
               events: {
@@ -66,6 +45,7 @@ export function ParticlesBackground() {
                 },
                 resize: {
                   enable: true,
+                  delay: 0.5,
                 },
               },
               modes: {
@@ -102,8 +82,8 @@ export function ParticlesBackground() {
               number: {
                 density: {
                   enable: true,
-                  width: dimensions.width,
-                  height: dimensions.height,
+                  width: 1920,
+                  height: 1080,
                 },
                 value: 100,
               },
