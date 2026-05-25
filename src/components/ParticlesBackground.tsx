@@ -7,12 +7,34 @@ import type { Engine } from "@tsparticles/engine"
 
 export function ParticlesBackground() {
   const [mounted, setMounted] = useState(false)
+  const [dimensions, setDimensions] = useState({ width: 1920, height: 1080 })
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
+    const timer = setTimeout(() => {
       setMounted(true)
-    })
-    return () => cancelAnimationFrame(frame)
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    }, 0)
+
+    let timeoutId: ReturnType<typeof setTimeout>
+    const handleResize = () => {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        setDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        })
+      }, 200)
+    }
+
+    window.addEventListener("resize", handleResize)
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener("resize", handleResize)
+      clearTimeout(timeoutId)
+    }
   }, [])
 
   const initEngine = async (engine: Engine) => {
@@ -47,7 +69,7 @@ export function ParticlesBackground() {
                   enable: false,
                 },
                 resize: {
-                  enable: true,
+                  enable: false,
                   delay: 1,
                 },
               },
@@ -79,8 +101,8 @@ export function ParticlesBackground() {
               number: {
                 density: {
                   enable: true,
-                  width: 1920,
-                  height: 1080,
+                  width: dimensions.width,
+                  height: dimensions.height,
                 },
                 value: 65,
               },
