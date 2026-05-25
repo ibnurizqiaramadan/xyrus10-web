@@ -23,10 +23,24 @@
   --radius: 1rem;
 }
 
+html,
+body {
+  min-height: 100svh;
+  /* Support for older browsers */
+  min-height: -webkit-fill-available;
+}
+
 body {
   background-color: #0D0F1A;
   color: #F8FAFC;
   font-feature-settings: "rlig" 1, "calt" 1;
+  /* Fix for -webkit-fill-available */
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
 }
 
 /* Performance optimizations for mobile */
