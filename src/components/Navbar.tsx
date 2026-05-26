@@ -7,6 +7,8 @@ import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/LanguageContext"
 
+import { usePathname } from "next/navigation"
+
 const navItems = [
   { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
@@ -16,6 +18,7 @@ const navItems = [
 ]
 
 export function Navbar() {
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
@@ -23,6 +26,8 @@ export function Navbar() {
   const { language, setLanguage } = useLanguage()
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
 
@@ -44,7 +49,9 @@ export function Navbar() {
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [pathname])
+
+  if (pathname.startsWith("/admin")) return null;
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()

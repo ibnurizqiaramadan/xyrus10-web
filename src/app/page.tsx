@@ -4,21 +4,30 @@ import { Experience } from "@/components/Experience";
 import { Projects } from "@/components/Projects";
 import { Contact } from "@/components/Contact";
 import { GradientDivider } from "@/components/GradientDivider";
+import { getHeroData, getAboutData, getExperienceData, getProjectData, getContactData } from "@/lib/data";
 
-export default function Home() {
+export default async function Home() {
+  const [heroData, aboutData, experienceData, projectData, contactData] = await Promise.all([
+    getHeroData(),
+    getAboutData(),
+    getExperienceData(),
+    getProjectData(),
+    getContactData()
+  ]);
+
   return (
     <main>
       <div id="home">
-        <Hero />
+        <Hero data={heroData} />
       </div>
       <GradientDivider />
-      <About />
+      <About data={aboutData} />
       <GradientDivider />
-      <Experience />
+      <Experience data={experienceData} />
       <GradientDivider />
-      <Projects />
+      <Projects data={projectData} />
       <GradientDivider />
-      <Contact />
+      <Contact data={contactData} />
     </main>
   );
 }

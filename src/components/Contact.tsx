@@ -8,12 +8,7 @@ import { Mail, MapPin, Phone } from "lucide-react"
 import { Github, Linkedin, Instagram } from "@/components/icons/BrandIcons"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
 import { useLanguage } from "@/lib/LanguageContext"
-
-const contactInfo = [
-  { icon: Mail, label: "Email", value: "dadanibnu61@gmail.com" },
-  { icon: MapPin, label: "Location", value: "Subang, Jawa Barat, Indonesia" },
-  { icon: Phone, label: "Phone", value: "+6282315100550" },
-]
+import { Contact as ContactType } from "@/lib/types"
 
 const socialLinks = [
   { icon: Github, href: "https://github.com/ibnurizqiaramadan", label: "GitHub" },
@@ -22,9 +17,15 @@ const socialLinks = [
   { icon: DiscordIcon, href: "http://discordapp.com/users/257147179297144833", label: "Discord: xyrus10" },
 ]
 
-export function Contact() {
+export function Contact({ data }: { data: ContactType | null }) {
   const shouldReduceMotion = useReducedMotion()
   const { language } = useLanguage()
+
+  const contactInfo = [
+    { icon: Mail, label: "Email", value: data?.email || "dadanibnu61@gmail.com" },
+    { icon: MapPin, label: "Location", value: (language === "id" ? data?.locationId : data?.locationEn) || "Subang, Jawa Barat, Indonesia" },
+    { icon: Phone, label: "Phone", value: data?.phone || "+6282315100550" },
+  ]
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">

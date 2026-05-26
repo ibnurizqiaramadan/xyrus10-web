@@ -6,6 +6,7 @@ import { TypeAnimation } from "react-type-animation"
 import Image from "next/image"
 import { DiscordIcon } from "@/components/icons/DiscordIcon"
 import { useLanguage } from "@/lib/LanguageContext"
+import { Hero as HeroType } from "@/lib/types"
 
 const socialLinks = [
   { icon: Github, href: "https://github.com/ibnurizqiaramadan", label: "GitHub" },
@@ -14,7 +15,7 @@ const socialLinks = [
   { icon: DiscordIcon, href: "http://discordapp.com/users/257147179297144833", label: "Discord: xyrus10", username: "xyrus10" },
 ]
 
-export function Hero() {
+export function Hero({ data }: { data: HeroType | null }) {
   const shouldReduceMotion = useReducedMotion()
   const { language } = useLanguage()
 
@@ -28,6 +29,11 @@ export function Hero() {
       })
     }
   }
+
+  // Fallback values
+  const name = data?.name || "Ibnu Rizqia Ramadan";
+  const title = language === "id" ? data?.titleId : data?.titleEn;
+  const description = (language === "id" ? data?.descriptionId : data?.descriptionEn) || "";
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-32 md:pt-40 pb-20">
@@ -46,8 +52,8 @@ export function Hero() {
               <div className="absolute inset-0 bg-gradient-to-tr from-[#2b7fff] to-[#60A5FA] rounded-3xl rotate-6 opacity-20 blur-2xl group-hover:rotate-12 transition-transform duration-500"></div>
               <div className="relative glass-card rounded-3xl p-1.5 h-full w-full rotate-0 hover:-rotate-2 transition-transform duration-500 overflow-hidden shadow-2xl">
                 <Image
-                  src="/xyrus10.jpg"
-                  alt="Ibnu Rizqia Ramadan"
+                  src={data?.imageUrl || "/xyrus10.jpg"}
+                  alt={name}
                   fill
                   className="object-cover rounded-[1.25rem]"
                   priority
@@ -63,13 +69,13 @@ export function Hero() {
             transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
           >
             <h1 className="text-5xl md:text-8xl font-bold text-[#F8FAFC] mb-6 tracking-tighter">
-              Ibnu <span className="text-gradient">Rizqia Ramadan</span>
+              {name.split(' ')[0]} <span className="text-gradient">{name.split(' ').slice(1).join(' ')}</span>
             </h1>
 
             <div className="text-xl md:text-3xl text-[#2b7fff] font-medium mb-8 tracking-wide">
               <TypeAnimation
                 sequence={[
-                  "AI-Powered Fullstack Engineer",
+                  title || "AI-Powered Fullstack Engineer",
                   2000,
                   "Infrastructure Specialist",
                   2000,
@@ -80,22 +86,13 @@ export function Hero() {
               />
             </div>
 
-            <motion.p
+            <motion.div
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: shouldReduceMotion ? 0 : 0.4 }}
               className="text-lg md:text-xl text-[#94A3B8] mb-12 leading-relaxed max-w-2xl font-light mx-auto"
-            >
-              {language === "id" ? (
-                <>
-                  Menembus batas antara <span className="text-[#F8FAFC] font-medium">software development</span> dan <span className="text-[#F8FAFC] font-medium">system administration</span> dengan dukungan teknologi AI. Saya membangun aplikasi web modern yang cepat dengan <span className="text-[#F8FAFC] font-medium">Next.js, Go, Node.js, & TypeScript</span>, sekaligus mengarsiteki infrastruktur server berbasis <span className="text-[#F8FAFC] font-medium">Proxmox & LXC</span> secara efisien. Berfokus pada efisiensi kode, kecepatan delivery, dan reliabilitas sistem yang kokoh.
-                </>
-              ) : (
-                <>
-                  Bridging the gap between <span className="text-[#F8FAFC] font-medium">software development</span> and <span className="text-[#F8FAFC] font-medium">system administration</span> powered by AI. I build fast, modern web applications using <span className="text-[#F8FAFC] font-medium">Next.js, Go, Node.js, & TypeScript</span>, while efficiently architecting server infrastructure based on <span className="text-[#F8FAFC] font-medium">Proxmox & LXC</span>. Focused on code efficiency, delivery speed, and robust system reliability.
-                </>
-              )}
-            </motion.p>
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
 
 
             {/* CTA Buttons */}
@@ -109,7 +106,7 @@ export function Hero() {
                 href="/cv-ibnu-rizqia.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass-card px-8 py-3.5 rounded-full font-semibold text-[#F8FAFC] hover:bg-[#2b7fff]/10 hover:border-[#2b7fff]/50 transition-all duration-300 flex items-center gap-2 group"
+                className="glass-card px-8 py-3.5 rounded-full font-semibold text-[#F8FAFC] hover:bg-[#2b7fff]/10 hover:border-[#2b7fff]/50 transition-all duration-300 flex items-center gap-2 group cursor-pointer"
               >
                 {language === "id" ? "Unduh CV" : "Download CV"}
                 <svg className="w-5 h-5 text-[#94A3B8] group-hover:text-[#2b7fff] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>

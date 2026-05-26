@@ -137,7 +137,7 @@ main {
 @media (max-width: 768px) {
   .glass-card {
     backdrop-filter: blur(10px);
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(30, 41, 59, 0.6);
   }
 }
 
