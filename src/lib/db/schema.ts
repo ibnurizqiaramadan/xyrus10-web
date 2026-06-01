@@ -79,3 +79,9 @@ export const socialLinks = sqliteTable("social_links", {
   href: text("href").notNull(),
   icon: text("icon").notNull(), // lucide icon name or similar
 });
+
+export const siteSettings = sqliteTable("site_settings", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  key: text("key").notNull().unique(),
+  value: text("value").notNull(),
+});

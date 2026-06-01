@@ -29,67 +29,82 @@ export function HeroForm({ initialData }: { initialData: Hero | null }) {
   };
 
   return (
-    <div className="glass-card p-8 rounded-[2rem] border-white/5 space-y-8 max-w-4xl relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent opacity-20" />
-      
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label>Name</Label>
-          <Input 
-            value={data.name} 
-            onChange={(e) => setData({ ...data, name: e.target.value })}
-            className="bg-white/5 border-white/10"
-          />
+    <div className="px-12 pb-20">
+      <div className="glass-card p-10 rounded-[2.5rem] border-white/5 space-y-10 max-w-5xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent opacity-30" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-[#2b7fff]">Identity</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[#94A3B8] ml-1">Full Name</Label>
+                <Input 
+                  value={data.name} 
+                  onChange={(e) => setData({ ...data, name: e.target.value })}
+                  className="bg-white/[0.03] border-white/10 h-12 px-4 rounded-xl focus:ring-[#2b7fff]/20"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[#94A3B8] ml-1">Avatar Image URL</Label>
+                <Input 
+                  value={data.imageUrl ?? ""} 
+                  onChange={(e) => setData({ ...data, imageUrl: e.target.value })}
+                  className="bg-white/[0.03] border-white/10 h-12 px-4 rounded-xl focus:ring-[#2b7fff]/20"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-[#2b7fff]">Professional Title</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[#94A3B8] ml-1">Title (ID)</Label>
+                <Input 
+                  value={data.titleId} 
+                  onChange={(e) => setData({ ...data, titleId: e.target.value })}
+                  className="bg-white/[0.03] border-white/10 h-12 px-4 rounded-xl focus:ring-[#2b7fff]/20"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[#94A3B8] ml-1">Title (EN)</Label>
+                <Input 
+                  value={data.titleEn} 
+                  onChange={(e) => setData({ ...data, titleEn: e.target.value })}
+                  className="bg-white/[0.03] border-white/10 h-12 px-4 rounded-xl focus:ring-[#2b7fff]/20"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label>Image URL</Label>
-          <Input 
-            value={data.imageUrl ?? ""} 
-            onChange={(e) => setData({ ...data, imageUrl: e.target.value })}
-            className="bg-white/5 border-white/10"
-          />
+
+        <div className="space-y-8">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-[#2b7fff]">Biography</h3>
+          <div className="grid grid-cols-1 gap-10">
+            <QuillEditor 
+              label="Description (ID)"
+              value={data.descriptionId}
+              onChange={(val) => setData({ ...data, descriptionId: val })}
+            />
+            <QuillEditor 
+              label="Description (EN)"
+              value={data.descriptionEn}
+              onChange={(val) => setData({ ...data, descriptionEn: val })}
+            />
+          </div>
+        </div>
+
+        <div className="pt-6 border-t border-white/5">
+          <Button 
+            onClick={handleSave} 
+            disabled={isSaving}
+            className="w-full md:w-auto md:px-12 h-12 bg-[#2b7fff] hover:bg-[#2b7fff]/90 text-white font-bold rounded-xl shadow-lg shadow-[#2b7fff]/20 transition-all active:scale-[0.98]"
+          >
+            {isSaving ? "Synchronizing..." : "Commit Changes"}
+          </Button>
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label>Title (ID)</Label>
-          <Input 
-            value={data.titleId} 
-            onChange={(e) => setData({ ...data, titleId: e.target.value })}
-            className="bg-white/5 border-white/10"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label>Title (EN)</Label>
-          <Input 
-            value={data.titleEn} 
-            onChange={(e) => setData({ ...data, titleEn: e.target.value })}
-            className="bg-white/5 border-white/10"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <QuillEditor 
-          label="Description (ID)"
-          value={data.descriptionId}
-          onChange={(val) => setData({ ...data, descriptionId: val })}
-        />
-        <QuillEditor 
-          label="Description (EN)"
-          value={data.descriptionEn}
-          onChange={(val) => setData({ ...data, descriptionEn: val })}
-        />
-      </div>
-
-      <Button 
-        onClick={handleSave} 
-        disabled={isSaving}
-        className="w-full bg-[#2b7fff] hover:bg-[#2b7fff]/90"
-      >
-        {isSaving ? "Saving..." : "Save Changes"}
-      </Button>
     </div>
   );
 }

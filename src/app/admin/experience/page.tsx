@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { experiences } from "@/lib/db/schema";
 import { ExperienceForm } from "./ExperienceForm";
 import { asc } from "drizzle-orm";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 export default async function ExperiencePage() {
   const allExperiences = await db.query.experiences.findMany({
@@ -10,12 +11,13 @@ export default async function ExperiencePage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[#F8FAFC]">Experience</h1>
-        <p className="text-[#94A3B8]">Manage your professional work history.</p>
+      <AdminHeader 
+        title="Experience" 
+        description="Manage your professional work history." 
+      />
+      <div className="px-8">
+        <ExperienceForm initialData={allExperiences} />
       </div>
-
-      <ExperienceForm initialData={allExperiences} />
     </div>
   );
 }

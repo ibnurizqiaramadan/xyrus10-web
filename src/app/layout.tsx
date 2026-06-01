@@ -8,23 +8,31 @@ import { BackgroundEffects } from "@/components/BackgroundEffects";
 import { ParticlesBackground } from "@/components/ParticlesBackground";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { getSettingByKey } from "@/lib/actions/content";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: "Ibnu Rizqia Ramadan - AI-Powered Fullstack Engineer & Infrastructure Specialist @ GoThru.co",
-  description: "AI-Powered Fullstack Engineer & Infrastructure Specialist di GoThru.co. Berfokus pada pembangunan aplikasi web berkinerja tinggi serta pengelolaan infrastruktur server yang scalable.",
-  keywords: ["portfolio", "full stack engineer", "infrastructure specialist", "gothru.co", "GoThru.co", "javascript", "typescript", "react", "nextjs", "golang", "fiber", "bun", "drizzle orm", "devops", "proxmox", "lxc", "web development"],
-  authors: [{ name: "Ibnu Rizqia Ramadan" }],
-  openGraph: {
-    title: "Ibnu Rizqia Ramadan - AI-Powered Fullstack Engineer & Infrastructure Specialist @ GoThru.co",
-    description: "Menembus batas antara software development dan system administration dengan dukungan teknologi AI. Membangun aplikasi web modern dengan Next.js & Go, mengarsiteki Proxmox & LXC.",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const faviconUrl = await getSettingByKey("favicon_url");
+  const siteTitle = await getSettingByKey("site_title");
+  const siteDescription = await getSettingByKey("site_description");
+
+  return {
+    title: siteTitle ?? "Ibnu Rizqia Ramadan - AI-Powered Fullstack Engineer & Infrastructure Specialist @ GoThru.co",
+    description: siteDescription ?? "AI-Powered Fullstack Engineer & Infrastructure Specialist di GoThru.co. Berfokus pada pembangunan aplikasi web berkinerja tinggi serta pengelolaan infrastruktur server yang scalable.",
+    keywords: ["portfolio", "full stack engineer", "infrastructure specialist", "gothru.co", "GoThru.co", "javascript", "typescript", "react", "nextjs", "golang", "fiber", "bun", "drizzle orm", "devops", "proxmox", "lxc", "web development"],
+    authors: [{ name: "Ibnu Rizqia Ramadan" }],
+    icons: faviconUrl ? { icon: faviconUrl } : undefined,
+    openGraph: {
+      title: siteTitle ?? "Ibnu Rizqia Ramadan - AI-Powered Fullstack Engineer & Infrastructure Specialist @ GoThru.co",
+      description: siteDescription ?? "Menembus batas antara software development dan system administration dengan dukungan teknologi AI. Membangun aplikasi web modern dengan Next.js & Go, mengarsiteki Proxmox & LXC.",
+      type: "website",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

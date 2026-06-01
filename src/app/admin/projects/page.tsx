@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { projects } from "@/lib/db/schema";
 import { ProjectsForm } from "./ProjectsForm";
 import { asc } from "drizzle-orm";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 export default async function ProjectsPage() {
   const allProjects = await db.query.projects.findMany({
@@ -10,12 +11,13 @@ export default async function ProjectsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[#F8FAFC]">Projects</h1>
-        <p className="text-[#94A3B8]">Manage your portfolio projects showcase.</p>
+      <AdminHeader 
+        title="Projects" 
+        description="Manage your portfolio projects showcase." 
+      />
+      <div className="px-8">
+        <ProjectsForm initialData={allProjects} />
       </div>
-
-      <ProjectsForm initialData={allProjects} />
     </div>
   );
 }

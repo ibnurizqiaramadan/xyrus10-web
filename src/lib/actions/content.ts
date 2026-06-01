@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "../db";
-import { hero, about, experiences, projects, contact } from "../db/schema";
+import { hero, about, experiences, projects, contact, siteSettings } from "../db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { invalidateCache } from "../redis";
@@ -80,5 +80,23 @@ export async function deleteProject(id: number) {
   await db.delete(projects).where(eq(projects.id, id));
   await invalidateCache("project_data");
   revalidatePath("/");
+  return { success: true };
+}
+
+export async function getSettingByKey(key: string): Promise<string | null> {
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1);
+  return rows[0]?.value ?? null;
+}
+
+export async function updateSetting(key: string, value: string) {
+  const existing = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1);
+  if (existing.length > 0) {
+    await db.update(siteSettings).set({ value }).where(eq(siteSettings.key, key));
+  } else {
+    await db.insert(siteSettings).values({ key, value });
+  }
+  await invalidateCache(`setting_${key}`);
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
   return { success: true };
 }

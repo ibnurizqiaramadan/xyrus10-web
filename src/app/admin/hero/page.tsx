@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { hero } from "@/lib/db/schema";
 import { HeroForm } from "./HeroForm";
+import { AdminHeader } from "@/components/admin/AdminHeader";
 
 export default async function AdminHeroPage() {
   const data = await db.select().from(hero).limit(1);
@@ -8,11 +9,13 @@ export default async function AdminHeroPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[#F8FAFC]">Hero</h1>
-        <p className="text-[#94A3B8]">Manage your hero section content and introduction.</p>
+      <AdminHeader 
+        title="Hero" 
+        description="Manage your hero section content and introduction." 
+      />
+      <div className="px-8">
+        <HeroForm initialData={initialData} />
       </div>
-      <HeroForm initialData={initialData} />
     </div>
   );
 }
