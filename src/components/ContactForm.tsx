@@ -12,8 +12,10 @@ import { Send } from "lucide-react"
 import { useState } from "react"
 import { useLanguage } from "@/lib/LanguageContext"
 
-export function ContactForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+// ponytail: mailto: hands the message to the visitor's own mail client — no messages table,
+// no mail provider, no API route. Upgrade path: POST to a server action + Resend if you ever
+// need delivery receipts or messages from visitors with no configured mail client.
+export function ContactForm({ email }: { email: string }) {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const shouldReduceMotion = useReducedMotion()
   const { language } = useLanguage()
@@ -30,20 +32,23 @@ export function ContactForm() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   })
 
-  const onSubmit = async (data: ContactFormData) => {
-    setIsSubmitting(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    console.log(data)
-    setIsSubmitting(false)
+  const onSubmit = (data: ContactFormData) => {
+    const subject = encodeURIComponent(
+      language === "id" ? `Pesan dari ${data.name}` : `Message from ${data.name}`
+    )
+    const body = encodeURIComponent(`${data.message}\n\n—\n${data.name} <${data.email}>`)
+    // escape everything but "@" — a CMS email must not be able to inject "&bcc=", but a
+    // percent-encoded "@" in the addr-spec trips up some desktop mail clients
+    const to = encodeURIComponent(email).replace(/%40/g, "@")
+    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`
     setIsSubmitted(true)
-    reset()
-    setTimeout(() => setIsSubmitted(false), 3000)
+    // deliberately no reset(): setting a mailto: href does not navigate away, so if the
+    // visitor cancels the "Open Mail?" dialog (or has no handler) their text is still there
+    setTimeout(() => setIsSubmitted(false), 8000)
   }
 
   return (
@@ -52,6 +57,7 @@ export function ContactForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
       onSubmit={handleSubmit(onSubmit)}
+      noValidate
       className="space-y-6"
     >
       <div className="space-y-2">
@@ -60,12 +66,15 @@ export function ContactForm() {
         </Label>
         <Input
           id="name"
+          autoComplete="name"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? "name-error" : undefined}
           {...register("name")}
           className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff]"
           placeholder="John Doe"
         />
         {errors.name && (
-          <p className="text-sm text-red-400">{errors.name.message}</p>
+          <p id="name-error" role="alert" className="text-sm text-red-400">{errors.name.message}</p>
         )}
       </div>
 
@@ -76,12 +85,15 @@ export function ContactForm() {
         <Input
           id="email"
           type="email"
+          autoComplete="email"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "email-error" : undefined}
           {...register("email")}
           className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff]"
           placeholder="john@example.com"
         />
         {errors.email && (
-          <p className="text-sm text-red-400">{errors.email.message}</p>
+          <p id="email-error" role="alert" className="text-sm text-red-400">{errors.email.message}</p>
         )}
       </div>
 
@@ -91,24 +103,24 @@ export function ContactForm() {
         </Label>
         <Textarea
           id="message"
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "message-error" : undefined}
           {...register("message")}
           className="glass-card border-white/10 bg-white/5 text-[#F8FAFC] focus:border-[#2b7fff] focus:ring-[#2b7fff] min-h-[150px]"
           placeholder={language === "id" ? "Tulis pesan Anda di sini..." : "Your message here..."}
         />
         {errors.message && (
-          <p className="text-sm text-red-400">{errors.message.message}</p>
+          <p id="message-error" role="alert" className="text-sm text-red-400">{errors.message.message}</p>
         )}
       </div>
 
       <Button
         type="submit"
-        disabled={isSubmitting || isSubmitted}
+        disabled={isSubmitted}
         className="w-full bg-gradient-to-r from-[#2b7fff] to-[#60A5FA] hover:opacity-90 transition-all duration-300 glow-primary"
       >
-        {isSubmitting ? (
-          language === "id" ? "Mengirim..." : "Sending..."
-        ) : isSubmitted ? (
-          language === "id" ? "Terkirim!" : "Sent!"
+        {isSubmitted ? (
+          language === "id" ? "Membuka aplikasi email..." : "Opening your mail app..."
         ) : (
           <>
             <Send className="mr-2 h-4 w-4" />
@@ -116,6 +128,13 @@ export function ContactForm() {
           </>
         )}
       </Button>
+
+      {/* always mounted: a live region inserted together with its text is not announced */}
+      <p role="status" className="text-sm text-[#94A3B8] min-h-[2.5rem]">
+        {isSubmitted && (language === "id"
+          ? `Aplikasi email Anda sedang dibuka dengan pesan ini. Tekan kirim di sana untuk menyelesaikannya. Tidak terbuka? Kirim langsung ke ${email}.`
+          : `Your mail app is opening with this message. Press send there to finish. Nothing opened? Email ${email} directly.`)}
+      </p>
     </motion.form>
   )
 }

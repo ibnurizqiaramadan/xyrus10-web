@@ -1,14 +1,32 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+}
+
 @theme inline {
   --color-background: #0D0F1A;
   --color-foreground: #F8FAFC;
-  --color-card: hsl(222.2 84% 4.9%);
+  /* One elevation step ABOVE --color-background (#0D0F1A). These were hsl(222.2 84% 4.9%)
+     = rgb(2,8,23), i.e. DARKER than the page, so every card read as a hole punched in the
+     background rather than a raised surface, and the border did all the work at ~1.5:1. */
+  --color-card: hsl(225 25% 11%);
   --color-card-foreground: #F8FAFC;
-  --color-popover: hsl(222.2 84% 4.9%);
+  --color-popover: hsl(225 25% 11%);
   --color-popover-foreground: #F8FAFC;
+  /* Brand blue. Used for accent TEXT, icons, rings and active indicators, all of which
+     sit on the dark background: 5.07:1 on --color-background, 4.67:1 on --color-card. */
   --color-primary: #2b7fff;
   --color-primary-foreground: #F8FAFC;
+  /* Solid fills only (buttons). The brand blue under near-white text measures 3.60:1 —
+     below the 4.5:1 AA floor for 14px text — while a blue dark enough to pass there
+     (3.75:1 on the background) is too dark to read as accent text. One token cannot do
+     both jobs, so filled surfaces get their own: 4.87:1 with --color-primary-foreground. */
+  --color-primary-solid: #1f6ad9;
   --color-secondary: #60A5FA;
   --color-secondary-foreground: #0D0F1A;
   --color-muted: hsl(217.2 32.6% 17.5%);
@@ -21,6 +39,14 @@
   --color-input: hsl(217.2 32.6% 17.5%);
   --color-ring: #2b7fff;
   --radius: 1rem;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
 }
 
 html,
@@ -50,7 +76,7 @@ main {
     animation-duration: 0.2s !important;
     transition-duration: 0.2s !important;
   }
-  
+
   /* Optimize blur effects for mobile */
   .blur-3xl,
   [class*="blur-"] {
@@ -163,4 +189,26 @@ main {
 /* Safe area for mobile devices (notch support) */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+:root {
+  --sidebar: hsl(222.2 84% 4.9%);
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #2b7fff;
+  --sidebar-primary-foreground: #F8FAFC;
+  --sidebar-accent: hsl(217.2 32.6% 12%);
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: hsl(217.2 32.6% 17.5%);
+  --sidebar-ring: #2b7fff;
+}
+
+.dark {
+  --sidebar: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }

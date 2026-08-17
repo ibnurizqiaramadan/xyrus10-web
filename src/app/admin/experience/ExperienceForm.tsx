@@ -1,198 +1,329 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { saveExperience, deleteExperience } from "@/lib/actions/content";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, Calendar, MapPin, Briefcase } from "lucide-react";
+import { Plus, Trash2, Pencil, MapPin, Calendar, Briefcase, Save, Loader2 } from "lucide-react";
 import { ExperienceInsert } from "@/lib/types";
 import { DynamicList } from "@/components/admin/DynamicList";
+import { AdminPage } from "@/components/admin/AdminPage";
 
-export function ExperienceForm({ initialData }: { initialData: ExperienceInsert[] }) {
-  const [experiences, setExperiences] = useState<ExperienceInsert[]>(initialData || []);
-  const [isSaving, setIsSaving] = useState(false);
+type ExpWithId = ExperienceInsert & { id?: number };
+
+const blankExp = (order: number): ExpWithId => ({
+  company: "",
+  roleId: "",
+  roleEn: "",
+  location: "",
+  periodId: "",
+  periodEn: "",
+  achievementsId: "[]",
+  achievementsEn: "[]",
+  displayOrder: order,
+});
+
+export function ExperienceForm({ initialData }: { initialData: ExpWithId[] }) {
+  const experiences = initialData || [];
+  const [draft, setDraft] = useState<ExpWithId | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ExpWithId | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
+  // ponytail: one useId prefix keeps every field id unique document-wide, no manual bookkeeping
+  const uid = useId();
 
-  const handleAdd = () => {
-    setExperiences([
-      ...experiences,
-      {
-        company: "New Company",
-        roleId: "",
-        roleEn: "",
-        location: "",
-        periodId: "",
-        periodEn: "",
-        achievementsId: "[]",
-        achievementsEn: "[]",
-        displayOrder: experiences.length,
-      },
-    ]);
+  const isNew = draft != null && draft.id == null;
+
+  const update = <K extends keyof ExpWithId>(field: K, value: ExpWithId[K]) => {
+    setDraft((d) => (d ? { ...d, [field]: value } : d));
   };
 
-  const handleSave = async (exp: ExperienceInsert) => {
-    setIsSaving(true);
-    const result = await saveExperience(exp);
-    if (result.success) {
-      router.refresh();
-    }
-    setIsSaving(false);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure?")) return;
-    if (id) {
-      await deleteExperience(id);
-    }
+  const handleSave = async () => {
+    if (!draft) return;
+    setSaving(true);
+    await saveExperience(draft);
+    setSaving(false);
+    setDraft(null);
     router.refresh();
   };
 
-  const updateExp = <K extends keyof ExperienceInsert>(index: number, field: K, value: ExperienceInsert[K]) => {
-    if (experiences[index][field] === value) return;
-    const newExps = [...experiences];
-    newExps[index] = { ...newExps[index], [field]: value };
-    setExperiences(newExps);
+  const handleDelete = async () => {
+    if (!deleteTarget?.id) return;
+    setDeleting(true);
+    await deleteExperience(deleteTarget.id);
+    setDeleteTarget(null);
+    setDeleting(false);
+    router.refresh();
   };
 
-  const handleAchievementsChange = (index: number, field: "achievementsId" | "achievementsEn", newValues: string[]) => {
-    updateExp(index, field, JSON.stringify(newValues));
+  const achCount = (json?: string) => {
+    try { return (JSON.parse(json || "[]") as string[]).length; } catch { return 0; }
   };
 
   return (
-    <div className="px-12 pb-20">
-      <div className="flex justify-between items-center mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-[#2b7fff] opacity-80">
-          Professional Ledger
-        </h3>
-        <Button onClick={handleAdd} className="bg-[#2b7fff] hover:bg-[#2b7fff]/90 px-6 h-11 rounded-xl shadow-lg shadow-[#2b7fff]/20 transition-all active:scale-95 gap-2">
-          <Plus size={18} strokeWidth={2.5} /> <span className="font-bold">Add Career Node</span>
-        </Button>
-      </div>
+    <>
+      <AdminPage
+        title="Experience"
+        description="Employers, roles and achievements listed in the experience section of the public site."
+        width="wide"
+        actions={
+          <>
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              {experiences.length} {experiences.length === 1 ? "entry" : "entries"}
+            </span>
+            <Button onClick={() => setDraft(blankExp(experiences.length))} size="sm" className="gap-2">
+              <Plus size={14} />
+              Add Experience
+            </Button>
+          </>
+        }
+      >
+        {experiences.length === 0 ? (
+          <Card className="py-16">
+            <CardContent className="flex flex-col items-center gap-3 text-muted-foreground">
+              <Briefcase size={40} className="opacity-30" />
+              <p className="text-sm font-medium">No experience entries yet</p>
+              <Button variant="outline" size="sm" onClick={() => setDraft(blankExp(0))} className="gap-2">
+                <Plus size={14} />
+                Add your first entry
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="pl-4">Company</TableHead>
+                  {/* Hidden below sm like Period/Achievements: with Role visible the row
+                      measured 365px against 341px available, clipping the last 8px of every
+                      Delete button so it could only be reached by scrolling the card sideways. */}
+                  <TableHead className="hidden sm:table-cell">Role</TableHead>
+                  <TableHead className="hidden sm:table-cell">Period</TableHead>
+                  <TableHead className="hidden sm:table-cell text-center">Achievements</TableHead>
+                  <TableHead className="pr-4 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {experiences.map((exp) => (
+                  <TableRow key={exp.id}>
+                    <TableCell className="pl-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Briefcase size={14} className="text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          {/* ponytail: below sm the name wraps — `truncate` is nowrap, which pins the
+                              auto-table column to the full title width and pushes Actions off a 375px screen */}
+                          <p className="font-medium break-words sm:truncate">
+                            {exp.company || <span className="text-muted-foreground font-normal italic">Untitled</span>}
+                          </p>
+                          {exp.location && (
+                            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                              <MapPin size={10} />{exp.location}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell text-muted-foreground">
+                      {exp.roleEn || exp.roleId || <span className="italic">—</span>}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {exp.periodEn || exp.periodId
+                        ? <Badge variant="outline" className="text-xs gap-1"><Calendar size={10} />{exp.periodEn || exp.periodId}</Badge>
+                        : <span className="text-muted-foreground italic">—</span>}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell text-center tabular-nums text-muted-foreground">
+                      {achCount(exp.achievementsEn) || achCount(exp.achievementsId)}
+                    </TableCell>
+                    <TableCell className="pr-4">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDraft({ ...exp })}
+                          aria-label={`Edit ${exp.company || "untitled entry"}`}
+                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                        >
+                          <Pencil size={14} />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeleteTarget(exp)}
+                          aria-label={`Delete ${exp.company || "untitled entry"}`}
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 size={14} />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+      </AdminPage>
 
-      <div className="grid gap-12 relative">
-        <div className="absolute left-[3.25rem] top-0 bottom-0 w-px bg-gradient-to-b from-[#2b7fff]/30 via-white/5 to-transparent" />
+      {/* Edit / Add Modal */}
+      <Dialog open={!!draft} onOpenChange={(open) => !open && setDraft(null)}>
+        <DialogContent className="max-w-2xl max-h-[88vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isNew ? "Add Experience" : "Edit Experience"}</DialogTitle>
+            <DialogDescription>Work history entry shown on the public site.</DialogDescription>
+          </DialogHeader>
 
-        {experiences.map((exp, index) => (
-          <div key={index} className="flex gap-10 group relative">
-            <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#111] border-2 border-[#2b7fff]/50 flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(43,127,255,0.2)]">
-              <Briefcase size={18} className="text-[#2b7fff]" />
-            </div>
-
-            <div className="glass-card flex-1 p-10 rounded-[2.5rem] border-white/5 space-y-8 relative overflow-hidden transition-all duration-300 hover:border-white/10">
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent opacity-20" />
-              
-              <div className="flex justify-between items-start">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 flex-1 mr-8">
-                  <div className="space-y-2">
-                    <Label className="text-[#94A3B8] ml-1 font-bold text-xs uppercase tracking-tighter">Entity / Organization</Label>
-                    <Input
-                      value={exp.company}
-                      onChange={(e) => updateExp(index, "company", e.target.value)}
-                      className="bg-white/[0.03] border-white/10 h-12 px-5 rounded-xl focus:ring-[#2b7fff]/20 text-lg font-bold text-[#F8FAFC]"
-                      placeholder="e.g. Google, ITB..."
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-[#94A3B8] ml-1 font-bold text-xs uppercase tracking-tighter flex items-center gap-2"><MapPin size={12} /> Geographical Context</Label>
-                    <Input
-                      value={exp.location}
-                      onChange={(e) => updateExp(index, "location", e.target.value)}
-                      className="bg-white/[0.03] border-white/10 h-12 px-5 rounded-xl"
-                      placeholder="e.g. Remote, Bandung..."
-                    />
-                  </div>
-                </div>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => exp.id && handleDelete(exp.id)}
-                  className="w-12 h-12 rounded-xl bg-red-500/5 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 transition-all"
-                >
-                  <Trash2 size={20} />
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-white/5">
-                <div className="space-y-6">
-                  <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#2b7fff] opacity-60">Designation</h4>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-[#64748B] text-[10px] font-bold uppercase ml-1">Role Title (ID)</Label>
-                      <Input
-                        value={exp.roleId}
-                        onChange={(e) => updateExp(index, "roleId", e.target.value)}
-                        className="bg-white/[0.02] border-white/5 h-11 px-4 rounded-xl text-sm"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[#64748B] text-[10px] font-bold uppercase ml-1">Role Title (EN)</Label>
-                      <Input
-                        value={exp.roleEn}
-                        onChange={(e) => updateExp(index, "roleEn", e.target.value)}
-                        className="bg-white/[0.02] border-white/5 h-11 px-4 rounded-xl text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#2b7fff] opacity-60 flex items-center gap-2"><Calendar size={10} /> Temporal Period</h4>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-[#64748B] text-[10px] font-bold uppercase ml-1">Duration (ID)</Label>
-                      <Input
-                        value={exp.periodId}
-                        onChange={(e) => updateExp(index, "periodId", e.target.value)}
-                        placeholder="e.g. 2022 - Sekarang"
-                        className="bg-white/[0.02] border-white/5 h-11 px-4 rounded-xl text-sm"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[#64748B] text-[10px] font-bold uppercase ml-1">Duration (EN)</Label>
-                      <Input
-                        value={exp.periodEn}
-                        onChange={(e) => updateExp(index, "periodEn", e.target.value)}
-                        placeholder="e.g. 2022 - Present"
-                        className="bg-white/[0.02] border-white/5 h-11 px-4 rounded-xl text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-10 pt-8 border-t border-white/5">
-                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#2b7fff] opacity-60">Key Contributions</h4>
-                <div className="grid grid-cols-1 gap-12 px-4">
-                  <DynamicList 
-                    label="Achievements (ID)"
-                    values={JSON.parse(exp.achievementsId || "[]")}
-                    onChange={(vals) => handleAchievementsChange(index, "achievementsId", vals)}
-                    placeholder="Describe a key achievement..."
+          {draft && (
+            <div className="space-y-6 py-2">
+              {/* Company + Location */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${uid}-company`}>Company / Organization</Label>
+                  <Input
+                    id={`${uid}-company`}
+                    value={draft.company}
+                    onChange={(e) => update("company", e.target.value)}
+                    placeholder="e.g. GoThru.co"
                   />
-                  <DynamicList 
-                    label="Achievements (EN)"
-                    values={JSON.parse(exp.achievementsEn || "[]")}
-                    onChange={(vals) => handleAchievementsChange(index, "achievementsEn", vals)}
-                    placeholder="Describe a key achievement..."
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={`${uid}-location`} className="flex items-center gap-1.5"><MapPin size={12} />Location</Label>
+                  <Input
+                    id={`${uid}-location`}
+                    value={draft.location}
+                    onChange={(e) => update("location", e.target.value)}
+                    placeholder="e.g. Remote, Bandung"
                   />
                 </div>
               </div>
 
-              <div className="pt-8 border-t border-white/5 flex justify-end">
-                <Button
-                  onClick={() => handleSave(exp)}
-                  disabled={isSaving}
-                  className="w-full md:w-auto px-10 h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/10 transition-all active:scale-95"
-                >
-                  {isSaving ? "Finalizing..." : "Update Experience Data"}
-                </Button>
+              {/* Role + Period */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Role</h3>
+                  <Tabs defaultValue="id">
+                    <TabsList className="mb-3">
+                      <TabsTrigger value="id">ID 🇮🇩</TabsTrigger>
+                      <TabsTrigger value="en">EN 🇬🇧</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="id">
+                      <div className="space-y-2">
+                        <Label htmlFor={`${uid}-role-id`} className="text-xs">Role Title (ID)</Label>
+                        <Input id={`${uid}-role-id`} value={draft.roleId} onChange={(e) => update("roleId", e.target.value)} placeholder="e.g. Fullstack Engineer" />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="en">
+                      <div className="space-y-2">
+                        <Label htmlFor={`${uid}-role-en`} className="text-xs">Role Title (EN)</Label>
+                        <Input id={`${uid}-role-en`} value={draft.roleEn} onChange={(e) => update("roleEn", e.target.value)} placeholder="e.g. Fullstack Engineer" />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5"><Calendar size={10} />Period</h3>
+                  <Tabs defaultValue="id">
+                    <TabsList className="mb-3">
+                      <TabsTrigger value="id">ID 🇮🇩</TabsTrigger>
+                      <TabsTrigger value="en">EN 🇬🇧</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="id">
+                      <div className="space-y-2">
+                        <Label htmlFor={`${uid}-period-id`} className="text-xs">Period (ID)</Label>
+                        <Input id={`${uid}-period-id`} value={draft.periodId} onChange={(e) => update("periodId", e.target.value)} placeholder="e.g. 2022 – Sekarang" />
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="en">
+                      <div className="space-y-2">
+                        <Label htmlFor={`${uid}-period-en`} className="text-xs">Period (EN)</Label>
+                        <Input id={`${uid}-period-en`} value={draft.periodEn} onChange={(e) => update("periodEn", e.target.value)} placeholder="e.g. 2022 – Present" />
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </div>
+
+              {/* Achievements */}
+              <div className="space-y-4">
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Achievements</h3>
+                <Tabs defaultValue="id">
+                  <TabsList className="mb-3">
+                    <TabsTrigger value="id">ID 🇮🇩</TabsTrigger>
+                    <TabsTrigger value="en">EN 🇬🇧</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="id">
+                    <DynamicList
+                      label="Achievements (Bahasa Indonesia)"
+                      values={JSON.parse(draft.achievementsId || "[]")}
+                      onChange={(vals) => update("achievementsId", JSON.stringify(vals))}
+                      placeholder="Describe a key achievement…"
+                    />
+                  </TabsContent>
+                  <TabsContent value="en">
+                    <DynamicList
+                      label="Achievements (English)"
+                      values={JSON.parse(draft.achievementsEn || "[]")}
+                      onChange={(vals) => update("achievementsEn", JSON.stringify(vals))}
+                      placeholder="Describe a key achievement…"
+                    />
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDraft(null)} disabled={saving}>Cancel</Button>
+            <Button onClick={handleSave} disabled={saving} className="gap-2 min-w-28">
+              {saving ? <><Loader2 size={14} className="animate-spin" />Saving…</> : <><Save size={14} />Save</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete Experience</DialogTitle>
+            <DialogDescription>
+              Remove <span className="font-semibold text-foreground">{deleteTarget?.company || "this entry"}</span> from your work history? This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              {deleting ? <Loader2 size={14} className="mr-2 animate-spin" /> : <Trash2 size={14} className="mr-2" />}
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

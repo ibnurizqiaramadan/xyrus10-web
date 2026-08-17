@@ -1,5 +1,6 @@
 import { db } from "./db";
-import { hero, about, experiences, projects, contact } from "./db/schema";
+import { hero, about, experiences, projects, contact, siteSettings } from "./db/schema";
+import { eq } from "drizzle-orm";
 import { getCache, setCache } from "./redis";
 import { Hero, About, Experience, Project, Contact } from "./types";
 
@@ -43,6 +44,17 @@ export async function getProjectData() {
   
   await setCache("project_data", data);
   return data;
+}
+
+export async function getProjectBySlug(slug: string) {
+  const data = await db.select().from(projects).where(eq(projects.slug, slug)).limit(1);
+  return data[0] || null;
+}
+
+// Public read (root layout metadata uses it) — must stay OUT of "use server" so it is not an RPC endpoint.
+export async function getSettingByKey(key: string): Promise<string | null> {
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.key, key)).limit(1);
+  return rows[0]?.value ?? null;
 }
 
 export async function getContactData() {

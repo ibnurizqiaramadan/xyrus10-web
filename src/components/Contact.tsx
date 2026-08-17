@@ -21,8 +21,11 @@ export function Contact({ data }: { data: ContactType | null }) {
   const shouldReduceMotion = useReducedMotion()
   const { language } = useLanguage()
 
+  // single source of truth for the address: shown in the info block AND used as the form's mailto: target
+  const email = data?.email || "dadanibnu61@gmail.com"
+
   const contactInfo = [
-    { icon: Mail, label: "Email", value: data?.email || "dadanibnu61@gmail.com" },
+    { icon: Mail, label: "Email", value: email },
     { icon: MapPin, label: "Location", value: (language === "id" ? data?.locationId : data?.locationEn) || "Subang, Jawa Barat, Indonesia" },
     { icon: Phone, label: "Phone", value: data?.phone || "+6282315100550" },
   ]
@@ -105,7 +108,7 @@ export function Contact({ data }: { data: ContactType | null }) {
           >
             <div className="glass-card p-10 rounded-[2.5rem] border-white/5 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent opacity-20" />
-              <ContactForm />
+              <ContactForm email={email} />
             </div>
           </motion.div>
         </div>

@@ -1,7 +1,13 @@
 import { readdir, unlink, stat } from "fs/promises";
-import { join } from "path";
+import { basename, join } from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { getUser } from "@/lib/auth/get-user";
+
+// ponytail: shared by GET (listing) and DELETE (guard) in this file. Not repo-wide —
+// src/app/admin/page.tsx has its own copy for the media count, and src/app/uploads
+// has the equivalent set as a MIME map; changing this one does not change those.
+// svg stays listed/deletable for files uploaded before svg was banned.
+const imageExts = /\.(jpg|jpeg|png|gif|webp|svg|ico)$/i;
 
 export async function GET() {
   const user = await getUser();
@@ -16,7 +22,6 @@ export async function GET() {
     files = [];
   }
 
-  const imageExts = /\.(jpg|jpeg|png|gif|webp|svg|ico)$/i;
   const imageFiles = files.filter((f) => imageExts.test(f));
 
   const result = await Promise.all(
@@ -41,8 +46,8 @@ export async function DELETE(req: NextRequest) {
   const user = await getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { filename } = await req.json();
-  if (!filename || filename.includes("..") || filename.includes("/")) {
+  const { filename } = await req.json().catch(() => ({}));
+  if (typeof filename !== "string" || !filename || basename(filename) !== filename || !imageExts.test(filename)) {
     return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
   }
 

@@ -32,6 +32,15 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# database (contains the admin password hash - never commit).
+# Ignoring the directory, not the filenames, so the -wal/-shm sidecars and any
+# backup dropped next to it are covered without adding a line each time.
+/data/
+
+# runtime uploads
+/public/uploads/
 
 # vercel
 .vercel
@@ -41,3 +50,8 @@ yarn-error.log*
 next-env.d.ts
 
 /.gemini/
+.playwright-mcp
+# local screenshots / scratch
+/image.png
+/*-1440.png
+/*-375.png

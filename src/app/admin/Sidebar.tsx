@@ -2,100 +2,216 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { LayoutDashboard, User, Briefcase, Code, Mail, Home, LogOut, FileImage, Settings } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarFallback,
+} from "@/components/ui/avatar";
+import {
+  LayoutDashboard, User, Briefcase, Code, Mail,
+  Home, LogOut, FileImage, Settings, MoreVertical, ExternalLink, PenSquare,
+} from "lucide-react";
 import { logout } from "@/lib/auth/actions";
 import type { User as LuciaUser } from "lucia";
 
-const menuItems = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Hero", href: "/admin/hero", icon: Home },
-  { name: "About", href: "/admin/about", icon: User },
-  { name: "Experience", href: "/admin/experience", icon: Briefcase },
-  { name: "Projects", href: "/admin/projects", icon: Code },
-  { name: "Contact", href: "/admin/contact", icon: Mail },
-  { name: "Media", href: "/admin/media", icon: FileImage },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+const navGroups = [
+  {
+    label: "Overview",
+    items: [{ title: "Dashboard", href: "/admin", icon: LayoutDashboard }],
+  },
+  {
+    label: "Content",
+    items: [
+      { title: "Hero", href: "/admin/hero", icon: Home },
+      { title: "About", href: "/admin/about", icon: User },
+      { title: "Experience", href: "/admin/experience", icon: Briefcase },
+      { title: "Projects", href: "/admin/projects", icon: Code },
+      { title: "Contact", href: "/admin/contact", icon: Mail },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { title: "Media", href: "/admin/media", icon: FileImage },
+      { title: "Settings", href: "/admin/settings", icon: Settings },
+    ],
+  },
 ];
 
-export function Sidebar({ user }: { user: LuciaUser | null }) {
-  const pathname = usePathname();
+// Active = exact match, or a child route (/admin/projects/12). "/admin" is exact-only,
+// otherwise every page would light up the Dashboard row too.
+function isActive(pathname: string, href: string) {
+  return href === "/admin" ? pathname === "/admin" : pathname === href || pathname.startsWith(`${href}/`);
+}
 
-  if (!user && pathname === "/admin/login") return null;
+// The active row is marked three ways so colour is never the only signal:
+// a primary rail on the left edge, a filled background, and heavier text.
+const activeStyles =
+  "relative data-[active=true]:font-semibold data-[active=true]:before:absolute data-[active=true]:before:left-0 data-[active=true]:before:inset-y-1.5 data-[active=true]:before:w-0.5 data-[active=true]:before:rounded-full data-[active=true]:before:bg-primary data-[active=true]:before:content-[''] data-[active=true]:[&>svg]:text-primary";
+
+function NavUser({ user }: { user: LuciaUser | null }) {
+  const { isMobile } = useSidebar();
+  const username = user?.username ?? "Admin";
+  const initials = username.substring(0, 2).toUpperCase();
 
   return (
-    <div className="w-72 bg-[#0A0A0A] border-r border-white/[0.05] flex flex-col h-full">
-      {/* Brand Section */}
-      <div className="p-8">
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#2b7fff] to-[#60A5FA] flex items-center justify-center shadow-lg shadow-[#2b7fff]/20">
-            <LayoutDashboard size={20} className="text-white" />
-          </div>
-          <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight">CMS Studio</h2>
-        </div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#2b7fff] opacity-80 pl-12">
-          Admin Console
-        </p>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 px-4 py-4 overflow-y-auto custom-scrollbar space-y-1">
-        <p className="px-4 text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-4">
-          Management
-        </p>
-        {menuItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 relative outline-none",
-                isActive
-                  ? "text-[#2b7fff] bg-[#2b7fff]/5"
-                  : "text-slate-400 hover:text-slate-100 hover:bg-white/[0.02]"
-              )}
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              tooltip={username}
+              className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              {isActive && (
-                <div className="absolute left-[-1px] w-1 h-5 bg-[#2b7fff] rounded-r-full shadow-[0_0_10px_#2b7fff]" />
-              )}
-              <item.icon 
-                size={18} 
-                className={cn(
-                  "transition-colors duration-200",
-                  isActive ? "text-[#2b7fff]" : "group-hover:text-slate-200"
-                )} 
-              />
-              <span className="text-sm font-medium">{item.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
+              <Avatar className="h-8 w-8 rounded-md">
+                <AvatarFallback className="rounded-md bg-primary/15 text-primary text-xs font-semibold">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <span className="flex-1 truncate text-left text-sm font-medium">{username}</span>
+              <MoreVertical className="ml-auto size-4 text-muted-foreground" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-52 rounded-md"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={4}
+          >
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left">
+                <Avatar className="h-8 w-8 rounded-md">
+                  <AvatarFallback className="rounded-md bg-primary/15 text-primary text-xs font-semibold">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="flex-1 truncate text-sm font-medium">{username}</span>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {/* Real server action, so signing out works without client JS.
+                onSelect must be prevented: Radix closes the menu on select, which
+                unmounts this form mid-submit — the browser then cancels it with
+                "Form submission canceled because the form is not connected" and the
+                session survives. logout() redirects, which unmounts the menu anyway. */}
+            <form action={logout}>
+              <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
+                <button
+                  type="submit"
+                  className="w-full cursor-pointer focus:bg-destructive focus:text-destructive-foreground"
+                >
+                  <LogOut className="size-4" />
+                  Sign out
+                </button>
+              </DropdownMenuItem>
+            </form>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
 
-      {/* User & Logout Section */}
-      <div className="p-4 mt-auto border-t border-white/[0.05] bg-white/[0.01]">
-        <div className="flex items-center gap-3 px-4 py-4 mb-2">
-          <div className="w-10 h-10 rounded-full bg-[#111] border border-white/5 flex items-center justify-center text-xs font-bold text-[#2b7fff] shadow-inner">
-            {user?.username?.substring(0, 2).toUpperCase() || "AD"}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-200 truncate">
-              {user?.username || "Administrator"}
-            </p>
-            <p className="text-[10px] text-slate-500 truncate uppercase tracking-tighter">
-              Authorized Access
-            </p>
-          </div>
-        </div>
-        
-        <button
-          onClick={() => logout()}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-500/[0.03] transition-all duration-200"
-        >
-          <LogOut size={18} />
-          <span className="text-sm font-medium">Terminate Session</span>
-        </button>
-      </div>
-    </div>
+export function AdminSidebar({ user, siteName }: { user: LuciaUser | null; siteName?: string | null }) {
+  const pathname = usePathname();
+
+  return (
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="gap-1 border-b border-sidebar-border p-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild size="lg" tooltip="CMS Studio">
+              <Link href="/admin">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary">
+                  <PenSquare className="size-4 text-primary-foreground" />
+                </div>
+                <span className="grid min-w-0 flex-1 leading-tight">
+                  <span className="truncate text-sm font-semibold">CMS Studio</span>
+                  {/* site_title is a ~90-char SEO string ("Name - Role & Specialist @ Co"),
+                      which truncates to a meaningless fragment here. Take the part before
+                      the first separator so the subtitle reads as a name, not a rendering bug. */}
+                  {siteName?.split(/\s[-|@·]\s/)[0].trim() ? (
+                    <span className="truncate text-xs text-muted-foreground">
+                      {siteName.split(/\s[-|@·]\s/)[0].trim()}
+                    </span>
+                  ) : null}
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="View live site">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View live site (opens in a new tab)"
+                className="text-muted-foreground"
+              >
+                <ExternalLink className="size-4" />
+                <span>View live site</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        {navGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel className="text-xs font-medium uppercase tracking-wider text-sidebar-foreground/60">
+              {group.label}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => {
+                  const active = isActive(pathname, item.href);
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        tooltip={item.title}
+                        className={activeStyles}
+                      >
+                        <Link href={item.href} aria-current={active ? "page" : undefined}>
+                          <item.icon className="size-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+
+      <SidebarFooter className="border-t border-sidebar-border p-2">
+        <NavUser user={user} />
+      </SidebarFooter>
+    </Sidebar>
   );
 }

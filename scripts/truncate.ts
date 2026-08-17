@@ -1,5 +1,5 @@
 import { db } from "../src/lib/db";
-import { users, sessions, hero, about, experiences, projects, contact, socialLinks } from "../src/lib/db/schema";
+import { users, sessions, hero, about, experiences, projects, contact, siteSettings } from "../src/lib/db/schema";
 
 async function main() {
   console.log("Truncating all tables...");
@@ -13,7 +13,7 @@ async function main() {
     await db.delete(experiences);
     await db.delete(projects);
     await db.delete(contact);
-    await db.delete(socialLinks);
+    await db.delete(siteSettings);
 
     console.log("✅ All tables truncated successfully!");
   } catch (error) {

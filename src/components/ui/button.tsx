@@ -5,12 +5,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  // ring-2 with an offset, not ring-1 flush: on a bg-primary button the ring colour IS the
+  // fill colour, so a flush 1px ring is invisible and the primary CTA had no perceivable
+  // keyboard focus state at all. The offset paints the ground colour between fill and ring.
+  "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          // primary-solid, not primary: near-white on the brand blue is 3.60:1, below the
+          // 4.5:1 AA floor for this 14px label. See the token comment in globals.css.
+          // No coloured glow either — a halo under every button is decoration, not depth.
+          "bg-primary-solid text-primary-foreground hover:bg-primary-solid/90",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
