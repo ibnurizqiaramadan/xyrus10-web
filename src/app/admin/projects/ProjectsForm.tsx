@@ -1,168 +1,342 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { QuillEditor } from "@/components/admin/QuillEditor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { saveProject, deleteProject } from "@/lib/actions/content";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Pencil, ExternalLink, Code2, Save, Loader2 } from "lucide-react";
 import { Github } from "@/components/icons/BrandIcons";
 import { ProjectInsert } from "@/lib/types";
 import { DynamicList } from "@/components/admin/DynamicList";
+import { AdminPage } from "@/components/admin/AdminPage";
+import { slugify } from "@/lib/utils";
 
-export function ProjectsForm({ initialData }: { initialData: ProjectInsert[] }) {
-  const [projects, setProjects] = useState<ProjectInsert[]>(initialData || []);
-  const [isSaving, setIsSaving] = useState(false);
+type ProjectWithId = ProjectInsert & { id?: number };
+
+const blankProject = (order: number): ProjectWithId => ({
+  title: "",
+  slug: "",
+  descriptionId: "",
+  descriptionEn: "",
+  techStack: "[]",
+  githubUrl: "",
+  demoUrl: "",
+  imageUrl: "",
+  displayOrder: order,
+});
+
+export function ProjectsForm({ initialData }: { initialData: ProjectWithId[] }) {
+  const projects = initialData || [];
+  const [draft, setDraft] = useState<ProjectWithId | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ProjectWithId | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
+  // ponytail: one useId prefix keeps every field id unique document-wide, no manual bookkeeping
+  const uid = useId();
 
-  const handleAdd = () => {
-    setProjects([
-      ...projects,
-      {
-        title: "New Project",
-        descriptionId: "",
-        descriptionEn: "",
-        techStack: "[]",
-        githubUrl: "",
-        demoUrl: "",
-        imageUrl: "",
-        displayOrder: projects.length,
-      },
-    ]);
+  const isNew = draft != null && draft.id == null;
+
+  const update = <K extends keyof ProjectWithId>(field: K, value: ProjectWithId[K]) => {
+    setDraft((d) => (d ? { ...d, [field]: value } : d));
   };
 
-  const handleSave = async (project: ProjectInsert) => {
-    setIsSaving(true);
-    const result = await saveProject(project); 
-    if (result.success) {
-      router.refresh();
-    }
-    setIsSaving(false);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure?")) return;
-    if (id) {
-      await deleteProject(id);
-    }
+  const handleSave = async () => {
+    if (!draft) return;
+    setSaving(true);
+    await saveProject(draft);
+    setSaving(false);
+    setDraft(null);
     router.refresh();
   };
 
-  const updateProject = <K extends keyof ProjectInsert>(index: number, field: K, value: ProjectInsert[K]) => {
-    if (projects[index][field] === value) return;
-    const newProjects = [...projects];
-    newProjects[index] = { ...newProjects[index], [field]: value };
-    setProjects(newProjects);
+  const handleDelete = async () => {
+    if (!deleteTarget?.id) return;
+    setDeleting(true);
+    await deleteProject(deleteTarget.id);
+    setDeleteTarget(null);
+    setDeleting(false);
+    router.refresh();
   };
 
-  const handleTechStackChange = (index: number, newValues: string[]) => {
-    updateProject(index, "techStack", JSON.stringify(newValues));
+  const techList = (json?: string): string[] => {
+    try { return JSON.parse(json || "[]"); } catch { return []; }
   };
 
   return (
-    <div className="px-12 pb-20">
-      <div className="flex justify-between items-center mb-10">
-        <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-[#2b7fff] opacity-80">
-          Portfolio Archive
-        </h3>
-        <Button onClick={handleAdd} className="bg-[#2b7fff] hover:bg-[#2b7fff]/90 px-6 h-11 rounded-xl shadow-lg shadow-[#2b7fff]/20 transition-all active:scale-95 gap-2">
-          <Plus size={18} strokeWidth={2.5} /> <span className="font-bold">New Project</span>
-        </Button>
-      </div>
+    <>
+      <AdminPage
+        title="Projects"
+        description="Portfolio entries shown in the projects grid and on their own /project/[slug] page."
+        width="wide"
+        actions={
+          <>
+            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              {projects.length} {projects.length === 1 ? "project" : "projects"}
+            </span>
+            <Button onClick={() => setDraft(blankProject(projects.length))} size="sm" className="gap-2">
+              <Plus size={14} />
+              Add Project
+            </Button>
+          </>
+        }
+      >
+        {projects.length === 0 ? (
+          <Card className="py-16">
+            <CardContent className="flex flex-col items-center gap-3 text-muted-foreground">
+              <Code2 size={40} className="opacity-30" />
+              <p className="text-sm font-medium">No projects yet</p>
+              <Button variant="outline" size="sm" onClick={() => setDraft(blankProject(0))} className="gap-2">
+                <Plus size={14} />
+                Add your first project
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="pl-4">Project</TableHead>
+                  <TableHead className="hidden sm:table-cell">Tech Stack</TableHead>
+                  <TableHead className="hidden sm:table-cell">Links</TableHead>
+                  <TableHead className="pr-4 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {projects.map((project) => {
+                  const tech = techList(project.techStack);
+                  return (
+                    <TableRow key={project.id}>
+                      <TableCell className="pl-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <Code2 size={14} className="text-primary" />
+                          </div>
+                          {/* ponytail: below sm the title wraps — `truncate` is nowrap, which pins the
+                              auto-table column to the full title width and pushes Actions off a 375px screen */}
+                          <p className="font-medium break-words sm:truncate">
+                            {project.title || <span className="text-muted-foreground font-normal italic">Untitled</span>}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <div className="flex flex-wrap gap-1 max-w-xs">
+                          {tech.slice(0, 3).map((t, i) => (
+                            <Badge key={i} variant="secondary" className="text-xs">{t}</Badge>
+                          ))}
+                          {tech.length > 3 && <Badge variant="outline" className="text-xs">+{tech.length - 3}</Badge>}
+                          {tech.length === 0 && <span className="text-muted-foreground italic">—</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          {project.githubUrl ? <Github width={14} height={14} /> : null}
+                          {project.demoUrl ? <ExternalLink size={14} /> : null}
+                          {!project.githubUrl && !project.demoUrl && <span className="italic">—</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell className="pr-4">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDraft({ ...project })}
+                            aria-label={`Edit ${project.title || "untitled project"}`}
+                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                          >
+                            <Pencil size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteTarget(project)}
+                            aria-label={`Delete ${project.title || "untitled project"}`}
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+      </AdminPage>
 
-      <div className="grid gap-10">
-        {projects.map((project, index) => (
-          <div key={index} className="glass-card p-10 rounded-[2.5rem] border-white/5 space-y-8 relative overflow-hidden transition-all duration-300 hover:border-white/10 group">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-[#2b7fff] to-transparent opacity-20 group-hover:opacity-40 transition-opacity" />
-            
-            <div className="flex justify-between items-start">
-              <div className="grid grid-cols-1 gap-8 flex-1 mr-8">
-                <div className="space-y-3">
-                  <Label className="text-[#94A3B8] ml-1 font-bold text-[10px] uppercase tracking-wider">Project Identifier</Label>
+      {/* Edit / Add Modal */}
+      <Dialog open={!!draft} onOpenChange={(open) => !open && setDraft(null)}>
+        <DialogContent className="max-w-2xl max-h-[88vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isNew ? "Add Project" : "Edit Project"}</DialogTitle>
+            <DialogDescription>Portfolio item shown on the public site.</DialogDescription>
+          </DialogHeader>
+
+          {draft && (
+            <div className="space-y-6 py-2">
+              {/* Title */}
+              <div className="space-y-2">
+                <Label htmlFor={`${uid}-title`}>Project Title</Label>
+                <Input
+                  id={`${uid}-title`}
+                  value={draft.title}
+                  onChange={(e) => {
+                    const title = e.target.value;
+                    setDraft((d) => {
+                      if (!d) return d;
+                      // auto-sync slug only while it still mirrors the title (untouched)
+                      const autoSync = !d.slug || d.slug === slugify(d.title);
+                      return { ...d, title, slug: autoSync ? slugify(title) : d.slug };
+                    });
+                  }}
+                  placeholder="e.g. Portfolio CMS"
+                  className="text-base font-medium"
+                />
+              </div>
+
+              {/* Slug */}
+              <div className="space-y-2">
+                <Label htmlFor={`${uid}-slug`} className="flex items-center gap-1.5 text-xs">
+                  URL Slug
+                  <span className="text-muted-foreground font-normal normal-case">/project/{draft.slug || "…"}</span>
+                </Label>
+                <Input
+                  id={`${uid}-slug`}
+                  value={draft.slug || ""}
+                  onChange={(e) => update("slug", slugify(e.target.value))}
+                  placeholder="auto-generated-from-title"
+                  className="text-sm font-mono"
+                />
+              </div>
+
+              {/* Tech Stack */}
+              <DynamicList
+                label="Tech Stack"
+                values={techList(draft.techStack)}
+                onChange={(vals) => update("techStack", JSON.stringify(vals))}
+                placeholder="e.g. Next.js, Tailwind…"
+                asBadges
+              />
+
+              {/* Links */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor={`${uid}-github`} className="flex items-center gap-1.5 text-xs">
+                    <span className="text-muted-foreground"><Github width={12} height={12} /></span>
+                    GitHub URL
+                  </Label>
                   <Input
-                    value={project.title}
-                    onChange={(e) => updateProject(index, "title", e.target.value)}
-                    className="bg-white/[0.03] border-white/10 h-12 px-5 rounded-xl focus:ring-[#2b7fff]/20 text-lg font-bold text-[#F8FAFC]"
-                    placeholder="Enter project name..."
+                    id={`${uid}-github`}
+                    value={draft.githubUrl || ""}
+                    onChange={(e) => update("githubUrl", e.target.value)}
+                    placeholder="https://github.com/…"
+                    className="text-sm font-mono"
                   />
                 </div>
-                
-                <div className="pt-4 px-1">
-                  <DynamicList 
-                    label="Technology Stack"
-                    values={JSON.parse(project.techStack || "[]")}
-                    onChange={(vals) => handleTechStackChange(index, vals)}
-                    placeholder="e.g. Next.js, Tailwind, Drizzle..."
+                <div className="space-y-2">
+                  <Label htmlFor={`${uid}-demo`} className="flex items-center gap-1.5 text-xs">
+                    <ExternalLink size={12} className="text-muted-foreground" />
+                    Demo URL
+                  </Label>
+                  <Input
+                    id={`${uid}-demo`}
+                    value={draft.demoUrl || ""}
+                    onChange={(e) => update("demoUrl", e.target.value)}
+                    placeholder="https://demo.example.com"
+                    className="text-sm font-mono"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={`${uid}-thumbnail`} className="text-xs">Thumbnail URL</Label>
+                  <Input
+                    id={`${uid}-thumbnail`}
+                    value={draft.imageUrl || ""}
+                    onChange={(e) => update("imageUrl", e.target.value)}
+                    placeholder="/uploads/project.jpg"
+                    className="text-sm font-mono"
                   />
                 </div>
               </div>
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => project.id && handleDelete(project.id)}
-                className="w-12 h-12 rounded-xl bg-red-500/5 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 transition-all"
-              >
-                <Trash2 size={20} />
-              </Button>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-white/5">
+              {/* Description */}
               <div className="space-y-3">
-                <Label className="text-[#94A3B8] ml-1 font-bold text-[10px] uppercase tracking-wider flex items-center gap-2"><Github width={14} height={14} /> Repository</Label>
-                <Input
-                  value={project.githubUrl || ""}
-                  onChange={(e) => updateProject(index, "githubUrl", e.target.value)}
-                  className="bg-white/[0.03] border-white/10 h-11 px-4 rounded-xl text-sm"
-                  placeholder="https://github.com/..."
-                />
-              </div>
-              <div className="space-y-3">
-                <Label className="text-[#94A3B8] ml-1 font-bold text-[10px] uppercase tracking-wider flex items-center gap-2"><ExternalLink size={14} /> Live Deployment</Label>
-                <Input
-                  value={project.demoUrl || ""}
-                  onChange={(e) => updateProject(index, "demoUrl", e.target.value)}
-                  className="bg-white/[0.03] border-white/10 h-11 px-4 rounded-xl text-sm"
-                  placeholder="https://demo.com"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label className="text-[#94A3B8] ml-1 font-bold text-[10px] uppercase tracking-wider">Thumbnail Preview</Label>
-                <Input
-                  value={project.imageUrl || ""}
-                  onChange={(e) => updateProject(index, "imageUrl", e.target.value)}
-                  className="bg-white/[0.03] border-white/10 h-11 px-4 rounded-xl text-sm"
-                  placeholder="/projects/image.jpg"
-                />
+                <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Description</h3>
+                <Tabs defaultValue="id">
+                  <TabsList className="mb-3">
+                    <TabsTrigger value="id">ID 🇮🇩</TabsTrigger>
+                    <TabsTrigger value="en">EN 🇬🇧</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="id">
+                    <QuillEditor
+                      label="Description (Bahasa Indonesia)"
+                      value={draft.descriptionId}
+                      onChange={(val) => update("descriptionId", val)}
+                    />
+                  </TabsContent>
+                  <TabsContent value="en">
+                    <QuillEditor
+                      label="Description (English)"
+                      value={draft.descriptionEn}
+                      onChange={(val) => update("descriptionEn", val)}
+                    />
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
+          )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 pt-8 border-t border-white/5">
-              <QuillEditor
-                label="Case Study (ID)"
-                value={project.descriptionId}
-                onChange={(val) => updateProject(index, "descriptionId", val)}
-              />
-              <QuillEditor
-                label="Case Study (EN)"
-                value={project.descriptionEn}
-                onChange={(val) => updateProject(index, "descriptionEn", val)}
-              />
-            </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDraft(null)} disabled={saving}>Cancel</Button>
+            <Button onClick={handleSave} disabled={saving} className="gap-2 min-w-28">
+              {saving ? <><Loader2 size={14} className="animate-spin" />Saving…</> : <><Save size={14} />Save</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-            <div className="pt-8 border-t border-white/5 flex justify-end">
-              <Button
-                onClick={() => handleSave(project)}
-                disabled={isSaving}
-                className="w-full md:w-auto px-10 h-12 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/10 transition-all active:scale-95"
-              >
-                {isSaving ? "Syncing..." : "Update Repository Entry"}
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      {/* Delete Dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete Project</DialogTitle>
+            <DialogDescription>
+              Remove <span className="font-semibold text-foreground">{deleteTarget?.title || "this project"}</span> from your portfolio? This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              {deleting ? <Loader2 size={14} className="mr-2 animate-spin" /> : <Trash2 size={14} className="mr-2" />}
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

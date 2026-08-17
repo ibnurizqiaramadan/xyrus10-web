@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { lucia } from "./auth";
 
 export async function getUser() {
@@ -17,5 +18,12 @@ export async function getUser() {
   } catch {
     // next.js throws when setting cookies in server components
   }
+  return user;
+}
+
+// Works in both server components and server actions, so one guard covers page loads and mutations.
+export async function requireUser() {
+  const user = await getUser();
+  if (!user) redirect("/login");
   return user;
 }

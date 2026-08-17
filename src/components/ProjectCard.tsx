@@ -1,11 +1,13 @@
 "use client"
 
+import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
-import { ExternalLink, Code } from "lucide-react"
+import { ExternalLink, Code, ArrowUpRight } from "lucide-react"
 import { Github } from "@/components/icons/BrandIcons"
 
 interface ProjectCardProps {
   title: string
+  slug: string
   description: string
   techStack: string[]
   githubUrl?: string
@@ -15,6 +17,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({
   title,
+  slug,
   description,
   techStack,
   githubUrl,
@@ -32,12 +35,19 @@ export function ProjectCard({
       className="h-full"
     >
       <div className="glass-card rounded-[2rem] border-white/5 h-full flex flex-col overflow-hidden transition-all duration-500 hover:border-[#2b7fff]/30 hover:glow-primary group relative">
+        {/* Full-card link overlay (keeps external links as real anchors above it) */}
+        <Link
+          href={`/project/${slug}`}
+          aria-label={title}
+          className="absolute inset-0 z-10 rounded-[2rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2b7fff]"
+        />
+
         <div className="p-8 flex-1 flex flex-col">
           <div className="flex justify-between items-start mb-6">
             <div className="w-12 h-12 rounded-2xl bg-[#2b7fff]/10 border border-[#2b7fff]/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
               <Code className="w-6 h-6 text-[#2b7fff]" />
             </div>
-            <div className="flex gap-2">
+            <div className="relative z-20 flex gap-2">
               {githubUrl && (
                 <a
                   href={githubUrl}
@@ -63,11 +73,12 @@ export function ProjectCard({
             </div>
           </div>
 
-          <h3 className="text-2xl font-bold text-[#F8FAFC] mb-4 tracking-tight group-hover:text-[#2b7fff] transition-colors duration-300">
+          <h3 className="text-2xl font-bold text-[#F8FAFC] mb-4 tracking-tight group-hover:text-[#2b7fff] transition-colors duration-300 flex items-start gap-1.5">
             {title}
+            <ArrowUpRight className="w-5 h-5 mt-1 flex-shrink-0 text-[#2b7fff] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
           </h3>
           
-          <p className="text-[#94A3B8] text-sm leading-relaxed font-light mb-8 flex-1">
+          <p className="text-[#94A3B8] text-sm leading-relaxed font-light mb-8 line-clamp-6">
             {description}
           </p>
 

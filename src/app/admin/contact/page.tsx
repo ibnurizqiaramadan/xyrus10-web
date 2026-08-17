@@ -1,19 +1,11 @@
+export const metadata = { title: "Contact" };
+
 import { db } from "@/lib/db";
 import { ContactForm } from "./ContactForm";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { requireUser } from "@/lib/auth/get-user";
 
 export default async function ContactPage() {
+  await requireUser();
   const contactData = await db.query.contact.findFirst();
-
-  return (
-    <div className="space-y-6">
-      <AdminHeader 
-        title="Contact" 
-        description="Manage your contact details and location information." 
-      />
-      <div className="px-8">
-        <ContactForm initialData={contactData || null} />
-      </div>
-    </div>
-  );
+  return <ContactForm initialData={contactData ?? null} />;
 }

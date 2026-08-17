@@ -58,6 +58,9 @@ export function BottomNav() {
         top: element.offsetTop - 64,
         behavior: "smooth",
       })
+    } else {
+      // Section not on this route (e.g. /project/[slug]) — go back to home anchor
+      window.location.assign(`/${href}`)
     }
   }
 

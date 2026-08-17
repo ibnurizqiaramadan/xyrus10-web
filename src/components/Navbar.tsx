@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion, useReducedMotion } from "framer-motion"
-import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/lib/LanguageContext"
 
@@ -20,7 +19,6 @@ const navItems = [
 export function Navbar() {
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
   const shouldReduceMotion = useReducedMotion()
   const { language, setLanguage } = useLanguage()
@@ -62,8 +60,10 @@ export function Navbar() {
         top: element.offsetTop - 64, // Subtract navbar height
         behavior: "smooth",
       })
+    } else {
+      // Section not on this route (e.g. /project/[slug]) — go back to home anchor
+      window.location.assign(`/${href}`)
     }
-    setIsMobileMenuOpen(false)
   }
 
   const getNavName = (itemHref: string) => {
@@ -144,53 +144,17 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Menu Button & Language Switcher */}
-          <div className="md:hidden flex items-center gap-4">
+          {/* Mobile Language Switcher (nav handled by BottomNav) */}
+          <div className="md:hidden flex items-center">
             <button
               onClick={() => setLanguage(language === "id" ? "en" : "id")}
               className="text-[10px] font-bold uppercase border border-white/10 px-2.5 py-1 rounded-full bg-white/5 text-[#94A3B8] hover:text-[#F8FAFC] transition-colors cursor-pointer"
             >
               {language === "id" ? "EN" : "ID"}
             </button>
-
-            <button
-              className="text-[#F8FAFC]"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1, height: "auto" } : { opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: shouldReduceMotion ? 0 : 0.3 }}
-          className="md:hidden glass-card border-t border-white/10 bg-[#0F172A]"
-        >
-          <div className="px-4 py-4 space-y-3">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => scrollToSection(e, item.href)}
-                className={cn(
-                  "block py-2 text-sm font-medium transition-all duration-300",
-                  activeSection === item.href.replace("#", "")
-                    ? "text-[#2b7fff]"
-                    : "text-[#94A3B8]"
-                )}
-              >
-                {getNavName(item.href)}
-              </a>
-            ))}
-          </div>
-        </motion.div>
-      )}
     </motion.nav>
   )
 }

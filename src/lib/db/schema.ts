@@ -56,6 +56,7 @@ export const experiences = sqliteTable("experiences", {
 export const projects = sqliteTable("projects", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
+  slug: text("slug").notNull().default(""),
   descriptionId: text("description_id").notNull(),
   descriptionEn: text("description_en").notNull(),
   techStack: text("tech_stack").notNull(), // JSON string array
@@ -73,12 +74,8 @@ export const contact = sqliteTable("contact", {
   locationEn: text("location_en").notNull(),
 });
 
-export const socialLinks = sqliteTable("social_links", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  label: text("label").notNull(),
-  href: text("href").notNull(),
-  icon: text("icon").notNull(), // lucide icon name or similar
-});
+// ponytail: no social_links table — the four links are hardcoded in Hero.tsx and
+// Contact.tsx and have never changed. Add it back only when they need editing.
 
 export const siteSettings = sqliteTable("site_settings", {
   id: integer("id").primaryKey({ autoIncrement: true }),

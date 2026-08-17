@@ -5,6 +5,8 @@ export default defineConfig({
   out: "./src/lib/db/migrations",
   dialect: "sqlite",
   dbCredentials: {
-    url: "sqlite.db",
+    // Same resolution as src/lib/db/index.ts, so db:push and db:studio can never
+    // act on a different file than the app itself opens.
+    url: process.env.DATABASE_PATH ?? "data/sqlite.db",
   },
 });

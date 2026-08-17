@@ -107,11 +107,39 @@ npm run build
 npm start
 ```
 
-### Deploy to Vercel:
+### State that must survive a deploy
 
-The easiest way to deploy is using [Vercel](https://vercel.com):
+Two paths hold everything the CMS owns. Neither is in git, and neither is
+rebuilt by `pnpm build` — copy them forward, or the site comes back empty:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=<your-repo-url>)
+- `data/` — the SQLite database (content, settings, admin users). Override the
+  location with `DATABASE_PATH`; both the app and `drizzle-kit` read it.
+- `public/uploads/` — files added through the media manager. Database rows
+  reference these by URL, so losing them leaves broken images behind.
+
+Set `SITE_URL` to the public origin (**with the scheme**) so `metadataBase`,
+`robots.txt` and `sitemap.xml` emit absolute URLs. See `.env.example`.
+
+#### Create the first admin user
+
+A fresh database has **no admin user** and there is no signup page, so until you
+create one `/admin/login` rejects every attempt:
+
+```bash
+pnpm create-admin <username> <password>
+```
+
+Point it at a database somewhere else with `DATABASE_PATH`:
+
+```bash
+DATABASE_PATH=/srv/xyrus10/data/sqlite.db pnpm create-admin <username> <password>
+```
+
+#### Seed the content
+
+`pnpm db:seed` loads the portfolio content. It **deletes** the hero, about,
+experience, project and contact tables first, so it is for a fresh database —
+not a top-up of a database you have already edited through `/admin`.
 
 ## 📝 Features
 

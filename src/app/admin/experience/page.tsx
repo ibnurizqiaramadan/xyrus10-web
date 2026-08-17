@@ -1,23 +1,15 @@
+export const metadata = { title: "Experience" };
+
 import { db } from "@/lib/db";
 import { experiences } from "@/lib/db/schema";
 import { ExperienceForm } from "./ExperienceForm";
 import { asc } from "drizzle-orm";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { requireUser } from "@/lib/auth/get-user";
 
 export default async function ExperiencePage() {
+  await requireUser();
   const allExperiences = await db.query.experiences.findMany({
     orderBy: [asc(experiences.displayOrder)],
   });
-
-  return (
-    <div className="space-y-6">
-      <AdminHeader 
-        title="Experience" 
-        description="Manage your professional work history." 
-      />
-      <div className="px-8">
-        <ExperienceForm initialData={allExperiences} />
-      </div>
-    </div>
-  );
+  return <ExperienceForm initialData={allExperiences} />;
 }
